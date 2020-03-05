@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/PKit.css">
+</head>
+<style>
+    body {
+        margin: 0;
+    }
+    html,body {
+        height: 100%;
+        width: 100%;
+    }
+</style>
+<body>
+    <div class='table1'></div>
+    <div class='page1'></div>
+    <div class='table2'></div>
+    <div class='page2'></div>
+    <script src="./js/PKit.js"></script>
+    <script src='./data/testData.js'></script>
+    <script>
+        new PKit({
+            // 分页配置
+            page: {
+                // 容器选择器
+                pContainer: '.page1',
+                // 分页独有id 如果多个分页那么就要设置区分
+                pId: 'page-serial-js1',
+                // 一页多少
+                count: 5,
+                // 页码
+                nums: 5,
+                // 关闭首页尾页 
+                ellipsis: false,
+                // 缩放系数
+                pZoom: 1.5,
+            },
+            // 表格配置
+            table: {
+                // 容器选择器
+                tContainer: '.table1',
+                // 表格独有id 如果多个
+                tId: 'table-serial-js1',
+                // 字段
+                names: [
+                    {
+                        field: 'id',
+                        hidden: true,
+                        name: 'id',
+                    },
+                    {
+                        field: 'name',
+                        name: '姓名',
+                    },
+                    {
+                        field: 'gender',
+                        name: '性别',
+                        formatter: function(value,index,row,datas) {
+                            if(value == 1) {
+                                return '男'
+                            } else if(value == 2) {
+                                return '女'
+                            }
+                        }
+                    }
+                ],
+                // 缩放系数
+                tZoom: 1.5,
+            },
+            callback: function (pageData) {
+                // 调用接口业务方法 调用自定义方法
+                // var data = getData(pageData); 
+
+                // 如果一次性返回全部数据 使用此扩展 将全部数据传入
+                var data = this.allData(testData, pageData);
+                // 根据返回数据渲染表格
+                this.renderTable(data);
+                // 根据返回的数据渲染分页
+                this.renderPage(data);
+            }
+        });
+
+        new PKit({
+            // 单独数据
+            page: {
+                count: 5,
+                nums: 5,
+                pId: 'page-serial-js2',
+                // 容器选择器
+                pContainer: '.page2',
+                ellipsis: '...',
+            },
+            // 单独数据
+            table: {
+                tContainer: '.table2',
+                tId: 'table-serial-js2',
+                names: [
+                    {
+                        field: 'id',
+                        hidden: true,
+                        name: 'id',
+                    },
+                    {
+                        field: 'name',
+                        name: '姓名',
+                    },
+                    {
+                        field: 'gender',
+                        name: '性别',
+                        formatter: function(value,index,row,datas) {
+                            if(value == 1) {
+                                return '男'
+                            } else if(value == 2) {
+                                return '女'
+                            }
+                        }
+                    }
+                ]
+            },
+            callback: function (pageData) {
+                // var data = getData(pageData);
+                // 如果是全部数据
+                var data = this.allData(
+                   testData
+                , pageData);
+                // 根据返回数据渲染表格
+                this.renderTable(data);
+                // 根据返回的数据渲染分页
+                this.renderPage(data);
+            }
+        });
+
+    </script>
+</body>
+
+</html>

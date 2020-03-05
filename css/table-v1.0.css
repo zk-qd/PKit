@@ -1,0 +1,77 @@
+/* 
+样式模板
+复杂样式需自定义
+
+本样式不允许自定义以及修改任何元素 font-size
+*/
+:root {
+    --tFontSize: 10px;
+    --tHeight: 2.5em;
+    --tWidth: 50em;
+    --margin: 0 7px;
+}
+
+/* 分页 */
+.table-serial-css {
+    overflow: hidden;
+    text-align: center;
+    margin: 0 auto;
+    font-size: var(--tFontSize);
+    width: var(--tWidth);
+
+    -moz-user-select:none; /*火狐*/
+    -webkit-user-select:none; /*webkit浏览器*/
+    -ms-user-select:none; /*IE10*/
+    -khtml-user-select:none; /*早期浏览器*/
+    user-select:none;
+}
+.table-serial-css .table-wrapper {
+    width: 100%;
+}
+.table-serial-css .table-caption {
+}
+.table-serial-css .table-thead {
+}
+.table-serial-css .table-tbody {
+}
+.table-serial-css .table-tfoot {
+}
+/* 所有tr */
+.table-serial-css .table-tr-equal {
+    height: var(--tHeight);
+    line-height: var(--tHeight);
+}
+/* 头部tr */
+.table-serial-css .table-tr-head {
+    background-color: rosybrown;
+
+}
+/* 身体tr */
+.table-serial-css .table-tr-body {
+    background-color: seagreen;
+
+}
+/* 所有td */
+.table-serial-css .table-td-equal {
+    
+}
+/* 头部td */
+.table-serial-css .table-td-head {
+
+}
+/* 身体td */
+.table-serial-css .table-td-body {
+
+}
+
+/* 隐藏 */
+.table-serial-css .table-th-hidden,
+.table-serial-css .table-td-hidden {
+    display: none;
+}
+
+/* 清除默认样式 */
+table {
+    border-collapse: collapse;
+}
+
