@@ -5,8 +5,8 @@
 本样式不允许自定义以及修改任何元素 font-size
 */
 :root {
-    --pHeight: 2.5em;;
-    --pWidth: 2.5em;
+    --pHeight: 2.2em;;
+    --pWidth: 2.2em;
     --pMargin: 0 0.3em;
     --pFontSize: 10px;
 }
@@ -37,7 +37,6 @@
     border-radius: 2px;
     box-shadow: 0px 0px 3px #EFEFEF;
     text-align: center;
-    /* font-size: 13px; */
     color:#535353;
     height: var(--pHeight);
     line-height: var(--pHeight);
@@ -48,6 +47,7 @@
 }
 .page-serial-css .page-equal:hover {
     background-color: #FF8200;
+    /* background-color: #F2F8FE; */
     color: white;
 }
 .page-serial-css .page-prev,
@@ -60,6 +60,8 @@
 }
 .page-serial-css .page-active {
     background-color: #FF8200;
+    /* background-color: #F2F8FE; */
+    color: white;
 }
 
 /* 清除默认样式 */

@@ -43,17 +43,19 @@
 }
 /* 头部tr */
 .table-serial-css .table-tr-head {
-    background-color: rosybrown;
+    background-color: #F0F2F8;
 
 }
 /* 身体tr */
 .table-serial-css .table-tr-body {
-    background-color: seagreen;
-
+    background-color: white;
+}
+.table-serial-css .table-tr-body:nth-last-of-type(2n) {
+    background-color: #F2F8FE;
 }
 /* 所有td */
 .table-serial-css .table-td-equal {
-    
+    border: 1px solid #E6E7E9;
 }
 /* 头部td */
 .table-serial-css .table-td-head {
