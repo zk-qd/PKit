@@ -1,13 +1,23 @@
 
 
 function /* 可自行扩展 */ PKit(options) {
+    _lifecycle.call(this, options);
+    this.beforeCreate();
 
-    // 扩展核心业务
-    _extensionCorePage.call(this, options);
-    _extensionCoreTable.call(this, options);
     // 初始化表格和分页参数
+    // 扩展核心业务
+    _extensionCore.call(this, options)
+    this.check();
+    _extensionCorePage.call(this, options);
     this.pCheck();
+    _extensionCoreTable.call(this, options);
     this.tCheck();
+
+    // 初始化完成
+    this.created();
+
+    // 构建之前
+    this.beforeMount();
 
     // 分页
     _buildPage.call(this);
@@ -15,30 +25,22 @@ function /* 可自行扩展 */ PKit(options) {
     this.pJs();
     this.pScale();
 
-    this.renderPage = _renderPage;
-
-
-
     // 表格
     _buildTable.call(this);
     this.tAddToDom();
     this.tHead();
     this.tScale();
 
-    this.renderTable = _renderTable;
-
-
-
+    // 构建完成
+    this.mounted();
 
     // 扩展业务
+    this.renderPage = _renderPage;
+    this.renderTable = _renderTable;
+
     // 添加 如果是全部数据
     this.allData = _allData;
 
-
-
-
-    // 触发调用外部接口
-    this.action();
 
 
 }
@@ -157,6 +159,8 @@ function /* 表格渲染业务 核心方法 */ _renderTable(data) {
         html.push("</tr>")
     }, this);
     tbodyDom.innerHTML = html.join('').trim();
+    // 表格渲染结束
+    this.updated();
 }
 
 function /* 分页结构业务 分页核心方法 */ _buildPage() {
@@ -233,27 +237,27 @@ function /* 分页结构业务 分页核心方法 */ _buildPage() {
                 if (current.classList.contains('page-prev')) {
                     if (cindex == 1) return;
                     that.index = cindex - 1;
-                    that.action();
+                    that.load();
                 } else if (current.classList.contains('page-next')) {
                     if (cindex == pages) return;
                     that.index = cindex + 1;
-                    that.action();
+                    that.load();
                 } else if (current.classList.contains('page-num')) {
                     // 获取页标数字
                     var label = Number(current.dataset.index);
                     if (label == cindex) return;
                     that.index = label;
-                    that.action();
+                    that.load();
                 } else if (current.classList.contains('page-first')) {
                     var label = Number(current.dataset.index);
                     if (label == cindex) return;
                     that.index = label;
-                    that.action();
+                    that.load();
                 } else if (current.classList.contains('page-last')) {
                     var label = Number(current.dataset.index);
                     if (label == cindex) return;
                     that.index = label;
-                    that.action();
+                    that.load();
                 };
             },
             configurate: {
@@ -277,17 +281,6 @@ function /* 分页结构业务 分页核心方法 */ _buildPage() {
         var fontSize = window.getComputedStyle(this.pageDom, null).getPropertyValue('font-size');
         this.pageDom.style.fontSize = parseInt(fontSize) * pZoom + 'px';
     }
-
-    // 回调
-    this.action = function () {
-        var pageData = {
-            index: this.index,
-            count: this.count,
-        }
-        this.callback(pageData);
-    }
-
-
 }
 
 function /* 分页核心扩展方法 */ _extensionCorePage(options) {
@@ -314,8 +307,7 @@ function /* 分页核心扩展方法 */ _extensionCorePage(options) {
     // 容器选择器
     this.pContainer = page.pContainer;
 
-    // callback
-    this.callback = options.callback;
+
 
     // 缩放因子
     this.pZoom = page.pZoom ? page.pZoom : 1;
@@ -444,7 +436,81 @@ function /* 分页渲染业务 分页核心方法 */ _renderPage(data) {
             this.lastDom.textContent = this.pages;
         }
     }
+    // 分页渲染结束
+    this.updated()
 }
+
+
+function /* 核心扩展 */ _extensionCore(options) {
+    // 重写load方法  数据加载方法
+    this.load = function (pageData) {
+        // 数据更新之前
+        this.beforeUpdate();
+        pageData = pageData || this.pageData();
+        options.load.call(this,pageData);
+    };
+    this.pageData = function () {
+        return {
+            index: this.index,
+            count: this.count,
+        }
+    };
+    // 记录渲染进度
+    this.progress = 0;
+
+    // 分页隐藏
+    this.pHide = function() {
+        this.pageDom.style.display = 'none';
+    }
+    // 表格隐藏
+    this.tHide = function() {
+        this.tableDom.style.display = 'none';
+    }
+    // 插件废弃
+    this.dead = function() {
+        this.beforeDestory();
+        document.querySelector(this.pContainer).removeChild(this.pageDom);
+        document.querySelector(this.tContainer).removeChild(this.tableDom);
+        this.destoryed();
+    }
+    this.check = function () {
+
+    }
+}
+function /* 生命周期 */ _lifecycle(options) {
+    // 重写方法
+    this.beforeCreate = function () {
+        return options.beforeCreate && options.beforeCreate.call(this);
+    }
+    this.created = function () {
+        return options.created && options.created.call(this);
+    }
+    this.beforeMount = function () {
+        return options.beforeMount && options.beforeMount.call(this);
+    }
+    this.mounted = function () {
+        return options.mounted && options.mounted.call(this);
+    }
+    this.beforeUpdate = function () {
+        return options.beforeUpdate && options.beforeUpdate.call(this);
+    }
+    this.updated = function () {
+        this.progress++;
+        if (this.progress >= 2) {
+            var re = options.updated && options.updated.call(this);
+            this.progress = 0;
+            return re;
+        }
+    }
+    this.beforeDestory = function () {
+        return options.beforeDestory && options.beforeDestory.call(this);
+    }
+    this.destoryed = function () {
+        return options.destoryed && options.destoryed.call(this);
+    }
+}
+
+
 
 function /* 数据处理方面的扩展 */ _allData(data, request) {
     // 传进来的
