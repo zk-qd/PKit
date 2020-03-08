@@ -149,21 +149,30 @@ function /* 表格渲染业务 核心方法 */ _renderTable(data) {
             3. 之所以不写 是因为要使得插件轻量化
             */
             // if (item.hasOwnProperty(citem.field)) {
-                value = item[citem.field] !== undefined ? item[citem.field] : '';
-                if (citem.format) {
-                    value = citem.format(value, i, item, datas);
-                }
-                html.push(
-                    "<td class='table-td-equal table-td-body " + (citem.hidden ? 'table-td-hidden' : '') + "'>" +
-                    value +
-                    "</td>"
-                )
+            value = item[citem.field] !== undefined ? item[citem.field] : '';
+            if (citem.format) {
+                value = citem.format(value, i, item, datas);
+            }
+            html.push(
+                "<td class='table-td-equal table-td-body " + (citem.hidden ? 'table-td-hidden' : '') + "'>" +
+                value +
+                "</td>"
+            )
             // } else {
             //     console.error('Caught ServerError: Object Field Deficiency!')
             // }
-        },this);
+        }, this);
         html.push("</tr>")
     }, this);
+    function nodata(html) {
+        if (datas.length == 0) {
+            // 暂无数据
+            html.push("<tr class='table-tr-equal table-tr-body'>");
+            html.push("<td class='table-td-equal table-td-body' colspan='100'>暂无数据</td>");
+            html.push("</tr>")
+        }
+    }
+    nodata(html);
     tbodyDom.innerHTML = html.join('').trim();
     // 表格渲染结束
     this.updated();
@@ -453,7 +462,7 @@ function /* 核心扩展 */ _extensionCore(options) {
         // 数据更新之前
         this.beforeUpdate();
         pageData = pageData || this.pageData();
-        options.load.call(this,pageData);
+        options.load.call(this, pageData);
     };
     this.pageData = function () {
         return {
@@ -465,15 +474,15 @@ function /* 核心扩展 */ _extensionCore(options) {
     this.progress = 0;
 
     // 分页隐藏
-    this.pHide = function() {
+    this.pHide = function () {
         this.pageDom.style.display = 'none';
     }
     // 表格隐藏
-    this.tHide = function() {
+    this.tHide = function () {
         this.tableDom.style.display = 'none';
     }
     // 插件废弃
-    this.dead = function() {
+    this.dead = function () {
         this.beforeDestory();
         document.querySelector(this.pContainer).removeChild(this.pageDom);
         document.querySelector(this.tContainer).removeChild(this.tableDom);
