@@ -67,7 +67,7 @@ function /* 表格核心扩展方法 */ _extensionCoreTable(options) {
             {
                 field: 'name'
                 name: '姓名',
-                formatter: function(value,index,row) {
+                format: function(value,index,row) {
 
                 }
             }
@@ -142,20 +142,26 @@ function /* 表格渲染业务 核心方法 */ _renderTable(data) {
     datas.forEach(function (item, i) {
         html.push("<tr class='table-tr-equal table-tr-body'>")
         this.names.forEach(function (citem, ci) {
-            if (item.hasOwnProperty(citem.field)) {
-                value = item[citem.field];
-                if (citem.formatter) {
-                    value = citem.formatter(value, i, item, datas);
+            /* 
+            modify: 
+            1. 如果对象无此字段或者为undefined 那么显示为 ''
+            2. 如果是删除 修改 查看 此类型的 那么只可以 只用用format返回a标签绑定事件， 
+            3. 之所以不写 是因为要使得插件轻量化
+            */
+            // if (item.hasOwnProperty(citem.field)) {
+                value = item[citem.field] !== undefined ? item[citem.field] : '';
+                if (citem.format) {
+                    value = citem.format(value, i, item, datas);
                 }
                 html.push(
                     "<td class='table-td-equal table-td-body " + (citem.hidden ? 'table-td-hidden' : '') + "'>" +
                     value +
                     "</td>"
                 )
-            } else {
-                console.error('Caught ServerError: Object Field Deficiency!')
-            }
-        });
+            // } else {
+            //     console.error('Caught ServerError: Object Field Deficiency!')
+            // }
+        },this);
         html.push("</tr>")
     }, this);
     tbodyDom.innerHTML = html.join('').trim();

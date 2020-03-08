@@ -1,0 +1,132 @@
+/* 自定义 */
+
+
+/* 分页 */
+.page-serial-css {
+    width: 100%;
+    overflow: hidden;
+    text-align: center;
+    font-size: 10px;
+
+    -moz-user-select:none; /*火狐*/
+    -webkit-user-select:none; /*webkit浏览器*/
+    -ms-user-select:none; /*IE10*/
+    -khtml-user-select:none; /*早期浏览器*/
+    user-select:none;
+}
+.page-serial-css .page-wrapper {
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-content: stretch;
+}
+/*需求改变 可以修改公共样式 */
+.page-serial-css .page-equal {
+    flex: none;
+    border: #EFEFEF solid 1px;
+    border-radius: 2px;
+    box-shadow: 0px 0px 3px #EFEFEF;
+    text-align: center;
+    color:#535353;
+    height:  2.2em;
+    line-height:  2.2em;
+    width: 2.2em;
+    margin:  0 0.3em;
+    font-weight: 500;
+    cursor: pointer;
+}
+.page-serial-css .page-equal:hover {
+    background-color: #FF8200;
+    /* background-color: #F2F8FE; */
+    color: white;
+}
+.page-serial-css .page-prev,
+.page-serial-css .page-next {
+    width: calc(2.2em/2*5);
+}
+.page-serial-css .page-disabled,
+.page-serial-css .page-disabled:hover  {
+    background-color: #EFEFEF;
+}
+.page-serial-css .page-active {
+    background-color: #FF8200;
+    /* background-color: #F2F8FE; */
+    color: white;
+}
+
+/* 清除默认样式 */
+ul {
+    list-style: none;
+    padding-inline-start: 0;
+}
+
+
+
+/* 表格 */
+.table-serial-css {
+    overflow: hidden;
+    text-align: center;
+    margin: 0 auto;
+    font-size: 10px;
+    width: 50em;
+
+    -moz-user-select:none; /*火狐*/
+    -webkit-user-select:none; /*webkit浏览器*/
+    -ms-user-select:none; /*IE10*/
+    -khtml-user-select:none; /*早期浏览器*/
+    user-select:none;
+}
+.table-serial-css .table-wrapper {
+    width: 100%;
+}
+.table-serial-css .table-caption {
+}
+.table-serial-css .table-thead {
+}
+.table-serial-css .table-tbody {
+}
+.table-serial-css .table-tfoot {
+}
+/* 所有tr */
+.table-serial-css .table-tr-equal {
+    height: 2.5em;
+    line-height: 2.5em;
+}
+/* 头部tr */
+.table-serial-css .table-tr-head {
+    background-color: #F0F2F8;
+
+}
+/* 身体tr */
+.table-serial-css .table-tr-body {
+    background-color: white;
+}
+.table-serial-css .table-tr-body:nth-last-of-type(2n) {
+    background-color: #F2F8FE;
+}
+/* 所有td */
+.table-serial-css .table-td-equal {
+    border: 1px solid #E6E7E9;
+}
+/* 头部td */
+.table-serial-css .table-td-head {
+
+}
+/* 身体td */
+.table-serial-css .table-td-body {
+
+}
+
+/* 隐藏 */
+.table-serial-css .table-th-hidden,
+.table-serial-css .table-td-hidden {
+    display: none;
+}
+
+/* 清除默认样式 */
+table {
+    border-collapse: collapse;
+}
+
+
+

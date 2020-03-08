@@ -6,12 +6,12 @@
 */
 :root {
     --tFontSize: 10px;
-    --tHeight: 2.5em;
+    --trHeight: 2.5em;
     --tWidth: 50em;
     --margin: 0 7px;
 }
 
-/* 分页 */
+/* 表格 */
 .table-serial-css {
     overflow: hidden;
     text-align: center;
@@ -38,8 +38,8 @@
 }
 /* 所有tr */
 .table-serial-css .table-tr-equal {
-    height: var(--tHeight);
-    line-height: var(--tHeight);
+    height: var(--trHeight);
+    line-height: var(--trHeight);
 }
 /* 头部tr */
 .table-serial-css .table-tr-head {

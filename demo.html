@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="./css/PKit.css">
+    <link rel="stylesheet" href="./css/PKit.min.css">
 </head>
 <style>
     body {
@@ -60,17 +60,25 @@
                     {
                         field: 'gender',
                         name: '性别',
-                        formatter: function(value,index,row,datas) {
+                        format: function(value,index,row,datas) {
                             if(value == 1) {
                                 return '男'
                             } else if(value == 2) {
                                 return '女'
                             }
                         }
+                    },
+                    {
+                        field: 'operation',
+                        name: '操作',
+                        format: function(value,index,row,data) {
+                            return "<a style='color: blue;'>查看</a>&nbsp;&nbsp;<a style='color: red;'>删除</a>"
+                        }
                     }
                 ],
                 // 缩放系数
                 tZoom: 1.5,
+
             },
             load: function (pageData) {
                 // 调用接口业务方法 调用自定义方法
@@ -112,7 +120,7 @@
                     {
                         field: 'gender',
                         name: '性别',
-                        formatter: function(value,index,row,datas) {
+                        format: function(value,index,row,datas) {
                             if(value == 1) {
                                 return '男'
                             } else if(value == 2) {
