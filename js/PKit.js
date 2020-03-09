@@ -129,6 +129,7 @@ function /* 构建表格核心业务 */ _buildTable() {
         // 为了固定tbody的高度
         var html = [];
         html.push("<tr class='table-tr-equal table-tr-head table-tr-pad'>");
+        html.push("<td class='table-td-equal table-td-body' colspan='100'>pad</td>");
         html.push("</tr>")
         this.tableDom.querySelector('.table-tbody').innerHTML = html.join('').trim();
     }
@@ -144,6 +145,7 @@ function /* 表格渲染业务 核心方法 */ _renderTable(data) {
     var datas = data.datas;
     var html = [];
     var value;
+    var title;
     datas.forEach(function (item, i) {
         html.push("<tr class='table-tr-equal table-tr-body'>")
         this.names.forEach(function (citem, ci) {
@@ -154,12 +156,15 @@ function /* 表格渲染业务 核心方法 */ _renderTable(data) {
             3. 之所以不写 是因为要使得插件轻量化
             */
             // if (item.hasOwnProperty(citem.field)) {
-            value = item[citem.field] !== undefined ? item[citem.field] : '';
+            // 如果值为undefined或者为null
+            value = item[citem.field] != undefined ? item[citem.field] : '';
             if (citem.format) {
                 value = citem.format.call(this, value, i, item, datas);
             }
+            title = value.toString().match(/<|>/g) ? '' : value;
             html.push(
-                "<td class='table-td-equal table-td-body " + (citem.hidden ? 'table-td-hidden' : '') + "'>" +
+                "<td class='table-td-equal table-td-body " + (citem.hidden ? 'table-td-hidden' : '') + "'" +
+                "title='" + title + "'>" +
                 value +
                 "</td>"
             )
@@ -175,7 +180,7 @@ function /* 表格渲染业务 核心方法 */ _renderTable(data) {
             while (pad != 0) {
                 pad--;
                 html.push("<tr class='table-tr-equal table-tr-body table-tr-pad'>");
-                html.push("<td class='table-td-equal table-td-body' colspan='100'></td>");
+                html.push("<td class='table-td-equal table-td-body' colspan='100'>pad</td>");
                 html.push("</tr>");
             }
         }
@@ -512,7 +517,7 @@ function /* 核心扩展 */ _extensionCore(options) {
         var fontSize = window.getComputedStyle(this.tableDom, null).getPropertyValue('font-size');
         // 固定tbody的高度
         // this.tableDom.style.height = (parseFloat(hh) + parseFloat(htr)  * this.count )/parseFloat(fontSize) + 'em';
-        this.tableDom.querySelector('.table-wrapper').style.height = (parseFloat(hh) + parseFloat(htr) * this.count) / parseFloat(fontSize) + 'em';
+        this.tableDom.querySelector('.table-wrapper').style.height = Math.ceil((parseFloat(hh) + parseFloat(htr) * this.count) / parseFloat(fontSize)) + 'em';
     }
     this.check = function () {
 
@@ -539,7 +544,7 @@ function /* 生命周期 */ _lifecycle(options) {
         this.progress++;
         if (this.progress >= 2) {
             // 填充为了保证表格高度固定
-            this.padTr(); 
+            this.padTr();
             // 如果没有数据数据的情况下
             this.nodata();
             this.tbodyAddToDom();
