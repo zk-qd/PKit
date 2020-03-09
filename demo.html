@@ -10,12 +10,16 @@
 <style>
     body {
         margin: 0;
+        padding-top: 100px;
     }
-    html,body {
+
+    html,
+    body {
         height: 100%;
         width: 100%;
     }
 </style>
+
 <body>
     <div class='table1'></div>
     <div class='page1'></div>
@@ -24,7 +28,7 @@
     <script src="./js/PKit.js"></script>
     <script src='./data/testData.js'></script>
     <script>
-       var p1 = new PKit({
+        var p1 = new PKit({
             // 分页配置
             page: {
                 // 容器选择器
@@ -60,10 +64,10 @@
                     {
                         field: 'gender',
                         name: '性别',
-                        format: function(value,index,row,datas) {
-                            if(value == 1) {
+                        format: function (value, index, row, datas) {
+                            if (value == 1) {
                                 return '男'
-                            } else if(value == 2) {
+                            } else if (value == 2) {
                                 return '女'
                             }
                         }
@@ -71,7 +75,7 @@
                     {
                         field: 'operation',
                         name: '操作',
-                        format: function(value,index,row,data) {
+                        format: function (value, index, row, data) {
                             return "<a style='color: blue;'>查看</a>&nbsp;&nbsp;<a style='color: red;'>删除</a>"
                         }
                     }
@@ -109,6 +113,13 @@
                 tId: 'table-serial-js2',
                 names: [
                     {
+                        field: 'serialNumber',
+                        name: '序号',
+                        format: function (value, index, row, data) {
+                            return this.count * (this.index -1) + 1 + index;
+                        }
+                    },
+                    {
                         field: 'id',
                         hidden: true,
                         name: 'id',
@@ -120,10 +131,10 @@
                     {
                         field: 'gender',
                         name: '性别',
-                        format: function(value,index,row,datas) {
-                            if(value == 1) {
+                        format: function (value, index, row, datas) {
+                            if (value == 1) {
                                 return '男'
-                            } else if(value == 2) {
+                            } else if (value == 2) {
                                 return '女'
                             }
                         }
@@ -134,8 +145,8 @@
                 // var data = getData(pageData);
                 // 如果是全部数据
                 var data = this.allData(
-                   testData
-                , pageData);
+                    testData
+                    , pageData);
                 // 根据返回数据渲染表格
                 this.renderTable(data);
                 // 根据返回的数据渲染分页

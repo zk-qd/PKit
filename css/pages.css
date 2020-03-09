@@ -54,6 +54,10 @@
 .page-serial-css .page-next {
     width: calc(var(--pWidth)/2*5);
 }
+.page-serial-css .page-num {
+    /* 默认隐藏所有页标 */
+    display: none;
+}
 .page-serial-css .page-disabled,
 .page-serial-css .page-disabled:hover  {
     background-color: #EFEFEF;

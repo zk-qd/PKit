@@ -29,7 +29,10 @@ function /* 可自行扩展 */ PKit(options) {
     _buildTable.call(this);
     this.tAddToDom();
     this.tHead();
+    this.tBody();
     this.tScale();
+    // 固定高度 必须放到scale后面
+    this.fixHeight();
 
     // 构建完成
     this.mounted();
@@ -40,11 +43,7 @@ function /* 可自行扩展 */ PKit(options) {
 
     // 添加 如果是全部数据
     this.allData = _allData;
-
-
-
 }
-
 function /* 表格核心扩展方法 */ _extensionCoreTable(options) {
     var table = options.table;
 
@@ -95,7 +94,6 @@ function /* 构建表格核心业务 */ _buildTable() {
     html.push("</table>");
     html.push("</div>")
 
-
     // 第一行 选择 或者 序号 后期开发
     this.tExtraFrist = function () {
         if (this.serialNumber) {
@@ -104,6 +102,15 @@ function /* 构建表格核心业务 */ _buildTable() {
 
         }
     };
+
+    // 添加到dom中
+    this.tAddToDom = function () {
+        document.querySelector(this.tContainer).innerHTML = html.join('').trim();
+        this.tableDom = document.getElementById(this.tId);
+        this.theadDom = this.tableDom.querySelector('.table-thead');
+        this.tbodyDom = this.tableDom.querySelector('.table-tbody');
+    };
+
 
     this.tHead = function () {
         var html = [];
@@ -118,13 +125,13 @@ function /* 构建表格核心业务 */ _buildTable() {
         html.push("</tr>")
         this.tableDom.querySelector('.table-thead').innerHTML = html.join('').trim();
     };
-
-
-    // 添加到dom中
-    this.tAddToDom = function () {
-        document.querySelector(this.tContainer).innerHTML = html.join('').trim();
-        this.tableDom = document.getElementById(this.tId);
-    };
+    this.tBody = function () {
+        // 为了固定tbody的高度
+        var html = [];
+        html.push("<tr class='table-tr-equal table-tr-head table-tr-pad'>");
+        html.push("</tr>")
+        this.tableDom.querySelector('.table-tbody').innerHTML = html.join('').trim();
+    }
 
     // 缩放
     this.tScale = function (zoom) {
@@ -133,12 +140,10 @@ function /* 构建表格核心业务 */ _buildTable() {
         this.tableDom.style.fontSize = parseInt(fontSize) * tZoom + 'px';
     }
 }
-
 function /* 表格渲染业务 核心方法 */ _renderTable(data) {
     var datas = data.datas;
     var html = [];
-    var value, tbodyDom = this.tableDom.querySelector('.table-tbody');
-
+    var value;
     datas.forEach(function (item, i) {
         html.push("<tr class='table-tr-equal table-tr-body'>")
         this.names.forEach(function (citem, ci) {
@@ -151,7 +156,7 @@ function /* 表格渲染业务 核心方法 */ _renderTable(data) {
             // if (item.hasOwnProperty(citem.field)) {
             value = item[citem.field] !== undefined ? item[citem.field] : '';
             if (citem.format) {
-                value = citem.format(value, i, item, datas);
+                value = citem.format.call(this, value, i, item, datas);
             }
             html.push(
                 "<td class='table-td-equal table-td-body " + (citem.hidden ? 'table-td-hidden' : '') + "'>" +
@@ -164,20 +169,66 @@ function /* 表格渲染业务 核心方法 */ _renderTable(data) {
         }, this);
         html.push("</tr>")
     }, this);
-    function nodata(html) {
+    this.padTr = function () {
+        if (datas.length > 0) {
+            var pad = this.count - datas.length;
+            while (pad != 0) {
+                pad--;
+                html.push("<tr class='table-tr-equal table-tr-body table-tr-pad'>");
+                html.push("<td class='table-td-equal table-td-body' colspan='100'></td>");
+                html.push("</tr>");
+            }
+        }
+    };
+    this.nodata = function () {
         if (datas.length == 0) {
             // 暂无数据
             html.push("<tr class='table-tr-equal table-tr-body'>");
-            html.push("<td class='table-td-equal table-td-body' colspan='100'>暂无数据</td>");
-            html.push("</tr>")
+            html.push("<td class='table-td-equal table-td-body table-td-nodata' colspan='100'>暂无数据</td>");
+            html.push("</tr>");
         }
     }
-    nodata(html);
-    tbodyDom.innerHTML = html.join('').trim();
+
+    this.tbodyAddToDom = function () {
+        this.tbodyDom.innerHTML = html.join('').trim();
+    }
     // 表格渲染结束
     this.updated();
 }
+function /* 分页核心扩展方法 */ _extensionCorePage(options) {
+    // 业务扩展
+    /* 
+        1. 多个表格时 ： 需要用户自定义id
+        2. 页码数： nums
+    */
+    var page = options.page;
 
+    this.pId = page.pId ? page.pId : 'page-serial-js';
+
+    // 页码
+    this.nums = page.nums ? page.nums : 5;
+
+    // 一页显示多少条数据
+    this.count = page.count ? page.count : 5;
+
+    // 默认开始查询第几页  
+    this.index = page.index ? page.index : 1;
+
+    this.ellipsis = page.ellipsis !== undefined ? page.ellipsis : '...';
+
+    // 容器选择器
+    this.pContainer = page.pContainer;
+
+
+
+    // 缩放因子
+    this.pZoom = page.pZoom ? page.pZoom : 1;
+
+    // 校验
+    this.pCheck = function () {
+
+    }
+}
 function /* 分页结构业务 分页核心方法 */ _buildPage() {
 
     // 添加结构
@@ -297,42 +348,6 @@ function /* 分页结构业务 分页核心方法 */ _buildPage() {
         this.pageDom.style.fontSize = parseInt(fontSize) * pZoom + 'px';
     }
 }
-
-function /* 分页核心扩展方法 */ _extensionCorePage(options) {
-    // 业务扩展
-    /* 
-        1. 多个表格时 ： 需要用户自定义id
-        2. 页码数： nums
-    */
-    var page = options.page;
-
-    this.pId = page.pId ? page.pId : 'page-serial-js';
-
-    // 页码
-    this.nums = page.nums ? page.nums : 5;
-
-    // 一页显示多少条数据
-    this.count = page.count ? page.count : 5;
-
-    // 默认开始查询第几页  
-    this.index = page.index ? page.index : 1;
-
-    this.ellipsis = page.ellipsis !== undefined ? page.ellipsis : '...';
-
-    // 容器选择器
-    this.pContainer = page.pContainer;
-
-
-
-    // 缩放因子
-    this.pZoom = page.pZoom ? page.pZoom : 1;
-
-    // 校验
-    this.pCheck = function () {
-
-    }
-}
-
 function /* 分页渲染业务 分页核心方法 */ _renderPage(data) {
 
     this.index = data.index;
@@ -354,14 +369,15 @@ function /* 分页渲染业务 分页核心方法 */ _renderPage(data) {
             if (i <= this.pages) {
                 item.dataset.index = i;
                 item.textContent = i;
-            } else {
-                item.style.display = 'none';
+                item.style.display = 'block';
             }
             hideLeft.call(this)
             hideRight.call(this);
         }, this);
 
     } else {
+        // 显示所有页标
+        this.numLabel.forEach(function (item) { item.style.display = 'block'; })
         if (this.nums % 2 == 0) {
             // 偶数
             mid = this.nums / 2;
@@ -454,8 +470,6 @@ function /* 分页渲染业务 分页核心方法 */ _renderPage(data) {
     // 分页渲染结束
     this.updated()
 }
-
-
 function /* 核心扩展 */ _extensionCore(options) {
     // 重写load方法  数据加载方法
     this.load = function (pageData) {
@@ -488,6 +502,18 @@ function /* 核心扩展 */ _extensionCore(options) {
         document.querySelector(this.tContainer).removeChild(this.tableDom);
         this.destoryed();
     }
+    // 固定高度 没有数据的情况下
+    this.fixHeight = function () {
+        var hiddenTrDom = this.tableDom.querySelector('.table-tr-pad');
+        var hh = window.getComputedStyle(this.theadDom, null).getPropertyValue('height');
+        // tr-hidden 高度
+        var htr = window.getComputedStyle(hiddenTrDom, null).getPropertyValue('height');
+        // 获取字体大小
+        var fontSize = window.getComputedStyle(this.tableDom, null).getPropertyValue('font-size');
+        // 固定tbody的高度
+        // this.tableDom.style.height = (parseFloat(hh) + parseFloat(htr)  * this.count )/parseFloat(fontSize) + 'em';
+        this.tableDom.querySelector('.table-wrapper').style.height = (parseFloat(hh) + parseFloat(htr) * this.count) / parseFloat(fontSize) + 'em';
+    }
     this.check = function () {
 
     }
@@ -512,6 +538,11 @@ function /* 生命周期 */ _lifecycle(options) {
     this.updated = function () {
         this.progress++;
         if (this.progress >= 2) {
+            // 填充为了保证表格高度固定
+            this.padTr(); 
+            // 如果没有数据数据的情况下
+            this.nodata();
+            this.tbodyAddToDom();
             var re = options.updated && options.updated.call(this);
             this.progress = 0;
             return re;
@@ -524,9 +555,6 @@ function /* 生命周期 */ _lifecycle(options) {
         return options.destoryed && options.destoryed.call(this);
     }
 }
-
-
-
 function /* 数据处理方面的扩展 */ _allData(data, request) {
     // 传进来的
     var index = request.index,

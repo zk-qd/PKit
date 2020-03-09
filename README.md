@@ -1,24 +1,119 @@
-# css兼容性
-1. .min兼容ie8以上
-2. 无.min不兼容ie11
+# 示例
+![示例](./img/example.jpg)
 
 
-# js 兼容性
-1. 兼容ie8以上
+# 插件说明
 
+## css 兼容性
 
+> .min 兼容 ie8 以上
+> 无.min 不兼容 ie11(方便调样式)
 
-# 扩展性
-1. 样式可自行扩展
-2. js可以自行扩展
+## js 兼容性
 
+> 兼容 ie8 以上
 
-# 迁移
-1. 此插件使用原生js 不依赖任何插件
+## 扩展性
 
+> 样式可自行扩展
+> js 可以自行扩展
 
-# 用法
-1. 看demo
+## 迁移
 
+> 此插件使用原生 js 不依赖任何插件
 
+# API
 
+### 核心方法
+
+| Name              |        Parameter         |    Return     |      Description |
+| ----------------- | :----------------------: | :-----------: | ---------------: |
+| load([,pageData]) |      {index,count}       |               | 加载数据渲染数据 |
+| pageData()        |                          | {index,count} |         获取分页 |
+| renderPage(data)  | {datas,index,rows,pages} |               |         渲染分页 |
+| pageData(data)    |         {datas}          |               |         渲染表格 |
+| pHide()           |                          |               |         隐藏分页 |
+| tHide()           |                          |               |         隐藏表格 |
+| dead()            |                          |               |         销毁表格 |
+
+### 扩展方法
+
+| Name                   |   Parameter   |             Return             |                                  Description |
+| ---------------------- | :-----------: | :----------------------------: | -------------------------------------------: |
+| allData(data,pageData) | Object,Object | {datas,index,count,rows,pages} | 如果后台返回的是全部数据，可以使用此方法处理 |
+
+### 生命周期方法
+
+---
+
+# 其他配置以及用法
+
+### 页面多分页表格
+
+> pId: 'page-serial-js1',
+> tId: 'table-serial-js1',
+
+### 分页首页尾页 开启为 true
+
+> ellipsis: false,
+
+### 缩放系数
+
+> tZoom: 1.5,
+> pZoom: 1.5,
+
+### 隐藏列属性 hidden
+
+```js
+{
+    field: 'id',
+    hidden: true,
+    name: 'id',
+},
+```
+
+### 格式化操作
+
+```js
+format: function(value,index,row,datas) {
+        if(value == 1) {
+            return '男'
+        } else if(value == 2) {
+            return '女'
+        }
+    }
+
+```
+
+### 添加序号
+
+```js
+// 第一种序号 每页都是从1开始
+names: [
+    {
+        field: 'serialNumber',
+        name: '序号',
+        format:function(value,index,row,data) {
+            return index + 1;
+        }
+    },
+]
+// 第二种方式 每页累加
+names: [
+    {
+        field: 'serialNumber',
+        name: '序号',
+        format:function(value,index,row,data) {
+            return this.count * (this.index -1) + 1;
+        }
+    },
+]
+```
+
+# 待解决问题
+
+# 已解决问题
+
+1. 插件没有调用 load 方法还是会有分页 已修复
+2. 插件没有固定高度的问题 已优化
+3. 添加序号 已解决
