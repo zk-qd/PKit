@@ -1,0 +1,75 @@
+/* 
+样式模板
+复杂样式需自定义
+
+本样式不允许自定义以及修改任何元素 font-size
+*/
+@pHeight: 2.2em;
+@pWidth: 2.2em;
+@pMargin: 0 0.3em;
+@pFontSize: 10px;
+
+/* 分页 */
+.page-serial-css {
+width: 100%;
+overflow: hidden;
+text-align: center;
+font-size: @pFontSize;
+
+-moz-user-select: none; /*火狐*/
+-webkit-user-select: none; /*webkit浏览器*/
+-ms-user-select: none; /*IE10*/
+-khtml-user-select: none; /*早期浏览器*/
+user-select: none;
+}
+.page-serial-css .page-wrapper {
+display: inline-flex;
+flex-direction: row;
+flex-wrap: nowrap;
+align-content: stretch;
+}
+/*需求改变 可以修改公共样式 */
+.page-serial-css .page-equal {
+flex: none;
+border: #efefef solid 1px;
+border-radius: 2px;
+box-shadow: 0px 0px 3px #efefef;
+text-align: center;
+color: #535353;
+height: @pHeight;
+line-height: @pHeight;
+width: @pWidth;
+margin: @pMargin;
+font-weight: 500;
+cursor: pointer;
+}
+.page-serial-css .page-equal:hover {
+/* background-color: #FF8200; */
+/* background-color: #409EFF; */
+color: #409eff;
+}
+.page-serial-css .page-prev,
+.page-serial-css .page-next {
+width: @pWidth / 2 * 5;
+}
+.page-serial-css .page-num {
+/* 默认隐藏所有页标 */
+display: none;
+}
+.page-serial-css .page-disabled,
+.page-serial-css .page-disabled:hover {
+background-color: #efefef;
+}
+.page-serial-css .page-active {
+/* background-color: #FF8200; */
+background-color: #409eff;
+color: white;
+}
+.page-serial-css .page-active:hover {
+    color: white;
+}
+/* 清除默认样式 */
+ul {
+list-style: none;
+padding-inline-start: 0;
+}

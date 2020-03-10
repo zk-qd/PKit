@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="./css/PKit.min.css">
+    <link rel="stylesheet" href="./less/PKit.css">
 </head>
 <style>
     body {
@@ -28,6 +28,12 @@
     <script src="./js/PKit.js"></script>
     <script src='./data/testData.js'></script>
     <script>
+        function up() {
+
+        }
+        function down() {
+
+        }
         var p1 = new PKit({
             // 分页配置
             page: {
@@ -39,8 +45,6 @@
                 count: 5,
                 // 页码
                 nums: 5,
-                // 关闭首页尾页 
-                ellipsis: false,
                 // 缩放系数
                 pZoom: 1.5,
             },
@@ -59,6 +63,8 @@
                     },
                     {
                         field: 'name',
+                        sort: 'chinese',
+                       
                         name: '姓名',
                     },
                     {
@@ -76,7 +82,8 @@
                         field: 'operation',
                         name: '操作',
                         format: function (value, index, row, data) {
-                            return "<a style='color: blue;'>查看</a>&nbsp;&nbsp;<a style='color: red;'>删除</a>"
+                            return "<a style='color: blue;' data-id='"+row.id+"'>查看</a>" +
+                            "&nbsp;&nbsp;<a style='color: red;' data-id='"+row.id+"'>删除</a>";
                         }
                     }
                 ],
@@ -126,6 +133,9 @@
                     },
                     {
                         field: 'name',
+                        up: up,
+                        down: down,
+                        sort: true,
                         name: '姓名',
                     },
                     {

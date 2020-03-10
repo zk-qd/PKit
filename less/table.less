@@ -1,0 +1,128 @@
+/* 
+样式模板
+复杂样式需自定义
+
+本样式不允许自定义以及修改任何元素 font-size
+*/
+// root字体大小
+@tFontSize: 10px;
+@trHeight: 2.5em;
+@margin: 0 7px;
+@tdPadding: 0 1em;
+
+
+// 根据业务修改
+@tWidth: 50em;
+
+
+
+/* 表格 */
+.table-serial-css {
+overflow: hidden;
+text-align: left;
+margin: 0 auto;
+font-size: @tFontSize;
+width: @tWidth;
+
+-moz-user-select: none; /*火狐*/
+-webkit-user-select: none; /*webkit浏览器*/
+-ms-user-select: none; /*IE10*/
+-khtml-user-select: none; /*早期浏览器*/
+user-select: none;
+}
+.table-serial-css .table-wrapper {
+    width: 100%;
+}
+.table-serial-css .table-caption {
+}
+.table-serial-css .table-thead {
+}
+.table-serial-css .table-tbody {
+}
+.table-serial-css .table-tfoot {
+}
+/* 所有tr */
+.table-serial-css .table-tr-equal {
+height: @trHeight;
+line-height: @trHeight;
+}
+
+/* 头部tr */
+.table-serial-css .table-tr-head {
+background-color: #f0f2f8;
+// color: #909399;
+// color: #606266;
+font-weight: 500;
+}
+/* 身体tr */
+.table-serial-css .table-tr-body {
+background-color: white;
+color: #606266;
+}
+.table-serial-css .table-tr-body:hover {
+/* background-color: #f5f7fa; */
+background-color: #f2f8fe;
+}
+.table-serial-css .table-tr-body:nth-last-of-type(2n) {
+background-color: #f2f8fe;
+}
+/* 所有td */
+.table-serial-css .table-td-equal {
+border: 1px solid #e6e7e9;
+padding: @tdPadding;
+}
+/* 头部td */
+.table-serial-css .table-td-head {
+position: relative;
+}
+/* 身体td */
+.table-serial-css .table-td-body {
+}
+
+/* 隐藏 */
+.table-serial-css .table-th-hidden,
+.table-serial-css .table-td-hidden {
+display: none;
+}
+/* 填充 */
+.table-serial-css .table-tr-pad {
+    visibility: hidden;
+}
+/* 暂无数据 */
+.table-serial-css .table-td-nodata {
+height: 100%;
+text-align: center;
+}
+
+/* 清除默认样式 */
+table {
+    border-collapse: collapse;
+}
+table,caption,thead,tbody,tfoot,tr,th,td {
+    box-sizing: border-box;
+}
+
+
+/* 排序 */
+.table-serial-css .sort-equal {
+position: absolute;
+top: 0;
+bottom: 0;
+margin-left: 0.2em;
+color: #C0C4CC;
+}
+.table-serial-css .sort-equal>i {
+position: absolute;
+transform: scale(0.9);
+line-height: initial;
+cursor: pointer;
+}
+.table-serial-css .sort-equal-active {
+color: #409EFF;
+}
+.table-serial-css .sort-up {
+top: 0.35em;
+}
+.table-serial-css .sort-down {
+bottom: 0.35em;
+}

@@ -1,13 +1,13 @@
 # 示例
-![示例](./img/example.jpg)
 
+![示例](./img/example.jpg)
 
 # 插件说明
 
 ## css 兼容性
 
-> .min 兼容 ie8 以上
-> 无.min 不兼容 ie11(方便调样式)
+> .css 兼容 ie8 以上
+> .less （方便调样式）
 
 ## js 兼容性
 
@@ -24,6 +24,39 @@
 
 # API
 
+### page 属性
+
+| Name       |  type   |             descriptor              |   default | required |
+| ---------- | :-----: | :---------------------------------: | --------: | :------: |
+| index      | integer |               当前页                |         1 |    no    |
+| count      | integer |             一页多少行              |         5 |    no    |
+| nums       | integer |               页码数                |         5 |    no    |
+| pContainer | string  |             容器选择器              | undefined |   yes    |
+| pId        | stirng  | 分页 id 名称（非选择器） 多分页必填 | undefined |    no    |
+| ellipsis   | string  |             分页省略号              | undefined |    no    |
+| pZoom      |  float  |              缩放系数               |         1 |    no    |
+
+### table 属性
+
+| Name       |  type  |             descriptor              |   default | required |
+| ---------- | :----: | :---------------------------------: | --------: | :------: |
+| names      | array  |                表头                 | undefined |   yes    |
+| tContainer | string |             容器选择器              | undefined |   yes    |
+| tId        | stirng | 表格 id 名称（非选择器） 多表格必填 | undefined |    no    |
+| tZoom      | float  |              缩放系数               |         1 |    no    |
+
+#### names
+
+| Name   |   type   | descriptor |   default | required |
+| ------ | :------: | :--------: | --------: | :------: |
+| field  |  string  |    字段    | undefined |   yes    |
+| name   |  string  |  字段名称  | undefined |   yes    |
+| hidden | boolean  |  隐藏字段  | undefined |    no    |
+| sort   |   any    |  排序模式  | undefined |    no    |
+| up     | function |    升序    | undefined |    no    |
+| down   | function |    降序    | undefined |    no    |
+| format | function |   格式化   | undefined |    no    |
+
 ### 核心方法
 
 | Name              |        Parameter         |    Return     |      Description |
@@ -36,11 +69,12 @@
 | tHide()           |                          |               |         隐藏表格 |
 | dead()            |                          |               |         销毁表格 |
 
-### 扩展方法
+### 扩展方法(外部使用)
 
 | Name                   |   Parameter   |             Return             |                                  Description |
 | ---------------------- | :-----------: | :----------------------------: | -------------------------------------------: |
 | allData(data,pageData) | Object,Object | {datas,index,count,rows,pages} | 如果后台返回的是全部数据，可以使用此方法处理 |
+| isUOrN(value)          |      any      |              any               |  如果数据是 undefined 或者 null 那么转换成'' |
 
 ### 生命周期方法
 
@@ -90,49 +124,143 @@ format: function(value,index,row,datas) {
 ```js
 // 第一种序号 每页都是从1开始
 names: [
-    {
-        field: 'serialNumber',
-        name: '序号',
-        format:function(value,index,row,data) {
-            return index + 1;
-        }
-    },
-]
+  {
+    field: "serialNumber",
+    name: "序号",
+    format: function(value, index, row, data) {
+      return index + 1;
+    }
+  }
+];
 // 第二种方式 每页累加
 names: [
-    {
-        field: 'serialNumber',
-        name: '序号',
-        format:function(value,index,row,data) {
-            return this.count * (this.index -1) + 1;
-        }
-    },
-]
+  {
+    field: "serialNumber",
+    name: "序号",
+    format: function(value, index, row, data) {
+      return this.count * (this.index - 1) + 1;
+    }
+  }
+];
 ```
+
+### 操作
+
+```js
+  {
+    field: 'operation',
+    name: '操作',
+    format: function (value, index, row, data) {
+        return "<a style='color: blue;' data-id='"+row.id+"' onclick='callback'>查看</a>&nbsp;&nbsp;<a style='color: red;' data-id='"+row.id+"'>删除</a>"
+    }
+}
+function callback(e) {
+    var current = e.currentTarget;
+    var id = current.dataset.id;
+}
+
+```
+
+### 排序
+
+> 三种方式: 默认排序 数字排序 汉字排序 自定义
+> 需要注意排序的数据是在 format 之前排好序的
+
+```js
+var names = [
+  // 开启排序 默认排序是数字排序
+  {
+    field: "name",
+    sort: true,
+    name: "姓名"
+  },
+  // 指定 数字排序
+  {
+    field: "name",
+    sort: "digit",
+    name: "姓名"
+  },
+  // 指定 汉字排序
+  {
+    field: "name",
+    sort: "chinese",
+    name: "姓名"
+  }
+];
+
+// 如果需要自定义排序
+var names = [
+  // 开启排序 默认排序是数字排序
+  {
+    field: "name",
+    sort: true,
+    up: up,
+    down: down,
+    name: "姓名"
+  }
+];
+// 排序有分两种类型
+function up(datas, item) {
+  // 升序 从小到大
+}
+function down(datas, item) {
+  // 降序 从大到小
+}
+// 不需要返回值 因为sort会改变原数组
+```
+
+# 内部配置
+
+### ellipsis 模式
+
+- 如果 ellipsis 存在即可开启，默认存在开启
+- 开启后页标 nums = nums + 4，根据显示多少个 ellipsis 显示多少页标
+- 这样能够切换页码的时候不会出现分页结构长度变化
+- 关闭 ellipsis 模式，注释 this.openEllipsisMode()方法调用;
 
 # 待解决问题
 
+1. 将样式文件改成 less 这样就不用维护两个文件了，到时候还可以弄一个 px 的
 
+2. ellipsis 也是需要占据一个页码的 这个比较难改
+   修改实时改变 那么就需要用 nums - ellipsis 已改
+   还有个 bug 问题
 
 # Version Iterator
+
 ### v1.0
+
 1. initial
 
 ### v1.1
+
 1. 插件样式调整
 
 ### v1.2
+
 1. 调整表格表格的调用方式
 
 ### v1.3
+
 1. 修复插件没有调用 load 方法还是会有分页
 2. 插件没有固定高度的问题 已优化
 
 ### v1.4
+
 1. 新增添加序号
 2. 添加文档内容
 
 ### v1.5
-1. 修复表格高度固定不正常问题(pad也要有内容)
-2. 添加表格内容title
 
+1. 修复表格高度固定不正常问题(pad 也要有内容)
+2. 添加表格内容 title
+
+### v1.6
+
+1. 调整分页颜色样式
+2. 表格悬停背景色
+3. 表格内容由居中调整为左对齐 并且添加了左右边距 1em
+4. 添加分页的 ellipsis 模式 有 bug
+5. 新增排序功能 并引入字体图标
+6. 样式修改为 less 引入的仍然是 css
+7. 修改 README.md

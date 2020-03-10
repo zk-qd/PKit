@@ -1,0 +1,32 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" >
+<!--
+2013-9-30: Created.
+-->
+<svg>
+<metadata>
+Created by iconfont
+</metadata>
+<defs>
+
+<font id="iconfont" horiz-adv-x="1024" >
+  <font-face
+    font-family="iconfont"
+    font-weight="500"
+    font-stretch="normal"
+    units-per-em="1024"
+    ascent="896"
+    descent="-128"
+  />
+    <missing-glyph />
+    
+    <glyph glyph-name="paixu-shang" unicode="&#59007;" d="M545.20232799 655.398836L1087.99999999 112.60116400000004l-1085.595343 0z"  horiz-adv-x="1085" />
+
+    
+    <glyph glyph-name="paixu-xia" unicode="&#59008;" d="M542.797672 112.60116400000004L0 655.398836h1085.595343z"  horiz-adv-x="1085" />
+
+    
+
+
+  </font>
+</defs></svg>

@@ -13,40 +13,62 @@ function /* 可自行扩展 */ PKit(options) {
     _extensionCoreTable.call(this, options);
     this.tCheck();
 
-    // 初始化完成
+    // 其他扩展
+    this.isUOrN = isUOrN;
+
+    // 隐藏列
+    this.PKit_inset_hidden = PKit_inset_hidden;
+    // 排序
+    this.PKit_inset_sortHtml = PKit_inset_sortHtml;
+    this.PKit_inset_sortJs = PKit_inset_sortJs;
+    this.PKit_inset_sortActive = PKit_inset_sortActive;
+    this.PKit_inset_sortData = PKit_inset_sortData;
+    this.PKit_inset_sort = PKit_inset_sort;
+    this.PKit_inset_sortPriority = PKit_inset_sortPriority;
+
+    // 初始化完成 构建之前
     this.created();
 
-    // 构建之前
+    // 挂载之前
     this.beforeMount();
-
+    
     // 分页
-    _buildPage.call(this);
-    this.pHtml();
-    this.pJs();
-    this.pScale();
-
+    if (this.page) {
+        _buildPage.call(this);
+        this.openEllipsisMode();
+        this.pHtml();
+        this.pJs();
+        this.pScale();
+    }
     // 表格
-    _buildTable.call(this);
-    this.tAddToDom();
-    this.tHead();
-    this.tBody();
-    this.tScale();
-    // 固定高度 必须放到scale后面
-    this.fixHeight();
+    if (this.table) {
+        _buildTable.call(this);
+        this.tAddToDom();
+        this.tHead();
+        this.tBody();
+        this.tScale();
+        // 固定高度 必须放到scale后面
+        this.fixHeight();
+    }
 
-    // 构建完成
+
+
+
+    this.PKit_inset_sortJs();
+
+    // 挂载完成
     this.mounted();
 
     // 扩展业务
     this.renderPage = _renderPage;
     this.renderTable = _renderTable;
-
     // 添加 如果是全部数据
-    this.allData = _allData;
+    this.allData = outer_allData;
+
 }
 function /* 表格核心扩展方法 */ _extensionCoreTable(options) {
     var table = options.table;
-
+    if (!table) return;
     // 选择器
     this.tContainer = table.tContainer;
 
@@ -82,7 +104,7 @@ function /* 表格核心扩展方法 */ _extensionCoreTable(options) {
 
 
 }
-function /* 构建表格核心业务 */ _buildTable() {
+function /* 表格结构核心业务 */ _buildTable() {
     var html = [];
     html.push("<div id='" + this.tId + "' class='table-serial-css'>")
     html.push("<table class='table-wrapper'>");
@@ -117,8 +139,9 @@ function /* 构建表格核心业务 */ _buildTable() {
         html.push("<tr class='table-tr-equal table-tr-head'>");
         this.names.forEach(function (item, i) {
             html.push(
-                "<td class='table-td-equal table-td-head " + (item.hidden ? 'table-td-hidden' : '') + "'>" +
+                "<td class='table-td-equal table-td-head " + this.PKit_inset_hidden(item) + "'>" +
                 item.name +
+                this.PKit_inset_sortHtml(item) +
                 "</td>"
             )
         }, this);
@@ -142,7 +165,10 @@ function /* 构建表格核心业务 */ _buildTable() {
     }
 }
 function /* 表格渲染业务 核心方法 */ _renderTable(data) {
-    var datas = data.datas;
+    // 全部渲染开始之前
+    this.beforeUpdate(data);
+    // 记录传入的数据
+    var datas = this.PKit_inset_sortPriority();
     var html = [];
     var value;
     var title;
@@ -157,7 +183,7 @@ function /* 表格渲染业务 核心方法 */ _renderTable(data) {
             */
             // if (item.hasOwnProperty(citem.field)) {
             // 如果值为undefined或者为null
-            value = item[citem.field] != undefined ? item[citem.field] : '';
+            value = this.isUOrN(item[citem.field]);
             if (citem.format) {
                 value = citem.format.call(this, value, i, item, datas);
             }
@@ -177,7 +203,7 @@ function /* 表格渲染业务 核心方法 */ _renderTable(data) {
     this.padTr = function () {
         if (datas.length > 0) {
             var pad = this.count - datas.length;
-            while (pad != 0) {
+            while (pad > 0) {
                 pad--;
                 html.push("<tr class='table-tr-equal table-tr-body table-tr-pad'>");
                 html.push("<td class='table-td-equal table-td-body' colspan='100'>pad</td>");
@@ -193,12 +219,11 @@ function /* 表格渲染业务 核心方法 */ _renderTable(data) {
             html.push("</tr>");
         }
     }
-
     this.tbodyAddToDom = function () {
         this.tbodyDom.innerHTML = html.join('').trim();
     }
     // 表格渲染结束
-    this.updated();
+    this.updated(data);
 }
 function /* 分页核心扩展方法 */ _extensionCorePage(options) {
     // 业务扩展
@@ -207,6 +232,7 @@ function /* 分页核心扩展方法 */ _extensionCorePage(options) {
         2. 页码数： nums
     */
     var page = options.page;
+    if (!page) return;
 
     this.pId = page.pId ? page.pId : 'page-serial-js';
 
@@ -219,7 +245,7 @@ function /* 分页核心扩展方法 */ _extensionCorePage(options) {
     // 默认开始查询第几页  
     this.index = page.index ? page.index : 1;
 
-    this.ellipsis = page.ellipsis !== undefined ? page.ellipsis : '...';
+    this.ellipsis = page.ellipsis;
 
     // 容器选择器
     this.pContainer = page.pContainer;
@@ -235,7 +261,6 @@ function /* 分页核心扩展方法 */ _extensionCorePage(options) {
     }
 }
 function /* 分页结构业务 分页核心方法 */ _buildPage() {
-
     // 添加结构
     this.pHtml = function () {
         var html = [];
@@ -255,6 +280,7 @@ function /* 分页结构业务 分页核心方法 */ _buildPage() {
                 "<li style='display: " + show + ";' class='page-ellipsis-left page-equal'>" + this.ellipsis + "</li>"
             );
         }
+
         for (var i = 1; i <= this.nums; i++) {
             var activeClass = ' page-active';
             if (i !== 1) activeClass = '';
@@ -354,6 +380,8 @@ function /* 分页结构业务 分页核心方法 */ _buildPage() {
     }
 }
 function /* 分页渲染业务 分页核心方法 */ _renderPage(data) {
+    // 全部渲染开始之前
+    this.beforeUpdate(data);
 
     this.index = data.index;
     this.rows = data.rows;
@@ -363,6 +391,9 @@ function /* 分页渲染业务 分页核心方法 */ _renderPage(data) {
     // ellipsis 省略号
     this.ellipsisLeftDom = this.pageDom.querySelector('.page-ellipsis-left');
     this.ellipsisRightDom = this.pageDom.querySelector('.page-ellipsis-right');
+    // 隐藏所有页标
+    hideNums.call(this);
+
     // 中间数 this.nums的中间
     var mid,
         // 视口的最大页标和最小页标
@@ -374,15 +405,13 @@ function /* 分页渲染业务 分页核心方法 */ _renderPage(data) {
             if (i <= this.pages) {
                 item.dataset.index = i;
                 item.textContent = i;
-                item.style.display = 'block';
+                shwoNum(item);
             }
             hideLeft.call(this)
             hideRight.call(this);
         }, this);
-
     } else {
         // 显示所有页标
-        this.numLabel.forEach(function (item) { item.style.display = 'block'; })
         if (this.nums % 2 == 0) {
             // 偶数
             mid = this.nums / 2;
@@ -394,35 +423,40 @@ function /* 分页渲染业务 分页核心方法 */ _renderPage(data) {
             min = this.index - mid + 1;
             max = this.index + mid - 1;
         }
+        // 如果开启ellipMode那么上面有bug
+
         // 求得最小值和最大值
         if (min <= 1) {
             min = 1;
             hideLeft.call(this);
             showRight.call(this);
             // 如果最小值为1 以最小值为准
-            Array.prototype.forEach.call(this.numLabel, function (item, i) {
+            Array.prototype.forEach.call(sliceNumLabel.call(this, 'min'), function (item, i) {
                 i = min + i;
                 item.dataset.index = i;
                 item.textContent = i;
+                shwoNum(item);
             }, this);
         } else if (max >= this.pages) {
             max = this.pages;
             hideRight.call(this);
             showLeft.call(this);
             // 如果最大值为this.pages 以最大值为准
-            Array.prototype.forEach.call(this.numLabel, function (item, i) {
+            Array.prototype.forEach.call(sliceNumLabel.call(this, 'max'), function (item, i) {
                 i = max - this.nums + i + 1;
                 item.dataset.index = i;
                 item.textContent = i;
+                shwoNum(item);
             }, this);
         } else {
             // 不可能同时满足上面两个条件 因为this.pages>this.nums
             showLeft.call(this);
             showRight.call(this);
-            Array.prototype.forEach.call(this.numLabel, function (item, i) {
+            Array.prototype.forEach.call(sliceNumLabel.call(this, 'mid'), function (item, i) {
                 i = min + i;
                 item.dataset.index = i;
                 item.textContent = i;
+                shwoNum(item);
             }, this);
         }
     }
@@ -431,6 +465,7 @@ function /* 分页渲染业务 分页核心方法 */ _renderPage(data) {
     this.wrapperDom.dataset.nums = this.rows;
     this.wrapperDom.dataset.count = this.count;
     this.wrapperDom.dataset.pages = this.pages;
+
     // disabled
     this.prevDom.classList.remove('page-disabled');
     this.nextDom.classList.remove('page-disabled');
@@ -447,6 +482,7 @@ function /* 分页渲染业务 分页核心方法 */ _renderPage(data) {
         else item.classList.remove('page-active');
     }, this);
 
+    // 方法内部使用的功能方法
     function hideLeft() {
         this.ellipsisLeftDom && (this.ellipsisLeftDom.style.display = 'none');
         this.firstDom && (this.firstDom.style.display = 'none');
@@ -472,16 +508,42 @@ function /* 分页渲染业务 分页核心方法 */ _renderPage(data) {
             this.lastDom.textContent = this.pages;
         }
     }
-    // 分页渲染结束
-    this.updated()
+    // 显示页标
+    function shwoNum(item) {
+        item.style.display = 'block';
+    }
+    // 隐藏所有页标
+    function hideNums() {
+        this.numLabel.forEach(function (item) { item.style.display = 'none' })
+    }
+    function sliceNumLabel(type) {
+        if (!this.ellipsisMode) return [...this.numLabel];
+        else {
+            switch (type) {
+                case 'min':
+                    return [...this.numLabel].slice(0, this.numLabel.length - 2)
+                case 'mid':
+                    return [...this.numLabel].slice(2, this.numLabel.length - 2)
+                case 'max':
+                    return [...this.numLabel].slice(2, this.numLabel.length)
+            }
+        }
+    }
+    // 全部渲染结束
+    this.updated(data)
 }
 function /* 核心扩展 */ _extensionCore(options) {
     // 重写load方法  数据加载方法
-    this.load = function (pageData) {
-        // 数据更新之前
-        this.beforeUpdate();
-        pageData = pageData || this.pageData();
-        options.load.call(this, pageData);
+    this.load = function (pageData, insideCallback) {
+        if (insideCallback) {
+            // 内部调用
+            insideCallback.call(this);
+        } else {
+            // 外部调用
+            pageData = pageData || this.pageData();
+            options.load.call(this, pageData);
+        }
+
     };
     this.pageData = function () {
         return {
@@ -489,8 +551,14 @@ function /* 核心扩展 */ _extensionCore(options) {
             count: this.count,
         }
     };
-    // 记录渲染进度
+
+    // 记录渲染之前进度 beforeUpdate
+    this.beforeProgress = 0;
+    this.maxBeforeProgress = 1;
+    // 记录渲染进度 updated
     this.progress = 0;
+    this.maxProgress = 2;
+
 
     // 分页隐藏
     this.pHide = function () {
@@ -519,6 +587,22 @@ function /* 核心扩展 */ _extensionCore(options) {
         // this.tableDom.style.height = (parseFloat(hh) + parseFloat(htr)  * this.count )/parseFloat(fontSize) + 'em';
         this.tableDom.querySelector('.table-wrapper').style.height = Math.ceil((parseFloat(hh) + parseFloat(htr) * this.count) / parseFloat(fontSize)) + 'em';
     }
+    // 如果开启ellipsis模式
+    this.ellipsisMode = false;
+    this.openEllipsisMode = function () {
+        if (this.ellipsis) {
+            this.nums = this.nums + 4;
+            this.ellipsisMode = true;
+        }
+    }
+
+    // 保存排序后的datas  下次数据改变之前清空  放到beforeUpdate
+    this.sortDatas = [];
+    // 排序类
+    this.sortActiveClassName = 'sort-equal-active';
+    // 记录排序状态的高亮的元素
+    this.sortDom = null;
+
     this.check = function () {
 
     }
@@ -537,19 +621,34 @@ function /* 生命周期 */ _lifecycle(options) {
     this.mounted = function () {
         return options.mounted && options.mounted.call(this);
     }
-    this.beforeUpdate = function () {
-        return options.beforeUpdate && options.beforeUpdate.call(this);
+    this.beforeUpdate = function (data) {
+        this.beforeProgress++;
+        if (this.beforeProgress == this.maxBeforeProgress) {
+            // 替换并保存原数据
+            if (data) this.datas = data.datas;
+            // 如果处于排序状态那么就排序
+            if (this.sortDom) this.PKit_inset_sortData();
+            return options.beforeUpdate && options.beforeUpdate.call(this);
+        }
+
     }
     this.updated = function () {
         this.progress++;
-        if (this.progress >= 2) {
-            // 填充为了保证表格高度固定
-            this.padTr();
-            // 如果没有数据数据的情况下
-            this.nodata();
-            this.tbodyAddToDom();
+        if (this.progress >= this.maxProgress) {
+            // 不一定是表格 
+            if (options.table) {
+                // 填充为了保证表格高度固定
+                this.padTr();
+                // 如果没有数据数据的情况下
+                this.nodata();
+                this.tbodyAddToDom();
+            }
             var re = options.updated && options.updated.call(this);
+            // 执行完一波生命周期方法 复原
+            this.beforeProgress = 0;
             this.progress = 0;
+            this.maxBeforeProgress = 1;
+            this.maxProgress = 2;
             return re;
         }
     }
@@ -560,7 +659,12 @@ function /* 生命周期 */ _lifecycle(options) {
         return options.destoryed && options.destoryed.call(this);
     }
 }
-function /* 数据处理方面的扩展 */ _allData(data, request) {
+
+/* 
+    外部使用的扩展
+*/
+
+function /* 数据处理方面的扩展 */ outer_allData(data, request) {
     // 传进来的
     var index = request.index,
         count = request.count,
@@ -576,6 +680,154 @@ function /* 数据处理方面的扩展 */ _allData(data, request) {
         pages: pages,
     }
 }
+
+/* 
+    内部使用的扩展
+*/
+
+function /* 隐藏扩展 */ PKit_inset_hidden(item) {
+    if (item.hidden) return 'table-td-hidden';
+    else return '';
+}
+function /* 排序扩展 */ PKit_inset_sortHtml(item) {
+
+    // 为了防止类名冲突 并规定类名
+    var upClassName = item.field + '_sort_up';
+    var downClassName = item.field + '_sort_down';
+    if (item.sort) {
+        return "<span class='sort-equal'><i class='iconfont icon-paixu-shang sort-up " + upClassName + "' data-sort='up' data-field='" + item.field + "'></i>" +
+            "<i class='iconfont icon-paixu-xia sort-down " + downClassName + "' data-sort='down' data-field='" + item.field + "'></i></span>"
+    } else return '';
+}
+function /* 排序绑定事件 */ PKit_inset_sortJs() {
+    this.names.forEach(function (item) {
+        var upDom, downDom, upClassName, downClassName, activeClass = this.sortActiveClassName;
+        if (item.sort) {
+            upClassName = item.field + '_sort_up';
+            downClassName = item.field + '_sort_down';
+            upDom = this.tableDom.querySelector('.' + upClassName);
+            downDom = this.tableDom.querySelector('.' + downClassName);
+            upDom.addEventListener('click', handle.bind(this));
+            downDom.addEventListener('click', handle.bind(this));
+        }
+        function handle(e) {
+            var current = e.currentTarget;
+            // 高亮
+            if (current.classList.contains(activeClass)) {
+                // 取消高亮 取消排序
+                this.PKit_inset_sortActive(1);
+            } else {
+                this.sortDom = current;
+                // 取消之前的排序 并进行之后的数据渲染
+                this.PKit_inset_sortActive(2);
+            }
+        }
+    }, this);
+}
+function /* 取消排序 渲染数据以及改变高亮*/ PKit_inset_sortActive(type) {
+    /* 
+        两种类型： 1. 取消排序  2. 取消排序后继续排序
+    */
+    // 获取高亮效果的元素
+    var last = this.tableDom.querySelector('.' + this.sortActiveClassName);
+    // 取消高亮
+    last && last.classList.remove(this.sortActiveClassName);
+    if (type == 1) {
+        this.sortDatas.length = 0;
+        this.sortDom = null;
+    } else if (type == 2) {
+        // 添加高亮效果的元素
+        var current = this.sortDom;
+        current.classList.add(this.sortActiveClassName);
+    }
+    this.load(null, function () {
+        this.maxBeforeProgress = 1;
+        this.maxProgress = 1;
+        this.renderTable({ datas: this.datas });
+    });
+
+}
+function /* 排序 仅仅改变排序数据 */ PKit_inset_sortData() {
+    // 当前排序的元素
+    var current = this.sortDom;
+    var field = current.dataset.field;
+    var item;
+    var datas = [];
+    // 克隆数组 不然指向同一个对象 会相互影响
+    this.datas.forEach(function (item) {
+        datas.push(item);
+    }, this);
+    // 不需要返回值 因为sort会改变原数组
+    for (var i = 0, length = this.names.length; i < length; i++) {
+        if (this.names[i].field == field) {
+            item = this.names[i];
+            break;
+        }
+    }
+    if (current.dataset.sort == 'up') {
+        if (item.up) {
+            item.up(datas, item);
+        } else {
+            this.PKit_inset_sort(datas, item, 'up')
+        }
+    } else if (current.dataset.sort == 'down') {
+        if (item.down) {
+            item.down(datas, item);
+        } else {
+            this.PKit_inset_sort(datas, item, 'down')
+        }
+    }
+    this.sortDatas = datas;
+}
+function /* 排序方法 */ PKit_inset_sort(datas, item, type) {
+    var field = item.field;
+    switch (item.sort) {
+        case 'digit':
+            digit.call(this);
+        case 'chinese':
+            chinese.call(this);
+        default:
+            digit.call(this);
+    }
+
+    function digit() {
+        if (type == 'up') {
+            datas.sort(function (a, b) {
+                // 升序 从小到大
+                return this.isUOrN(a[field]) - this.isUOrN(b[field])
+            })
+        } else if (type == 'down') {
+            // 降序 从大到小
+            datas.sort(function (a, b) {
+                return this.isUOrN(b[field]) - this.isUOrN(a[field])
+            })
+        }
+    }
+    function chinese() {
+        if (type == 'up') {
+            datas.sort(function (a, b) {
+                // 升序 从小到大
+                return this.isUOrN(a[field]).localeCompare(this.isUOrN(b[field]));
+            })
+        } else if (type == 'down') {
+            // 降序 从大到小
+            datas.sort(function (a, b) {
+                return this.isUOrN(b[field]).localeCompare(this.isUOrN(a[field]));
+            })
+        }
+    }
+
+}
+function /* 排序数据优先原则 */ PKit_inset_sortPriority() {
+
+    if (this.sortDom && this.sortDatas.length) return this.sortDatas;
+    else return this.datas;
+}
+function /* 转换undefined以及null */ isUOrN(val) {
+    if (val == undefined) return '';
+    else return val;
+}
+
 
 
 
