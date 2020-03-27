@@ -528,7 +528,8 @@ function /* 分页渲染业务 分页核心方法 */ _renderPage(data) {
     if (this.index == 1) {
         this.prevDom.classList.add('page-disabled');
     }
-    if (this.index == this.pages) {
+    // 还有一种情况 pages可能为0
+    if (this.index == this.pages || this.pages == 0) {
         this.nextDom.classList.add('page-disabled');
     }
     // active
@@ -615,7 +616,6 @@ function /* 核心扩展 */ _extensionCore(options) {
     // 记录渲染进度 updated
     this.progress = 0;
     this.maxProgress = 2;
-
 
     // 分页隐藏
     this.pHide = function () {

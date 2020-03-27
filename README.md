@@ -304,3 +304,7 @@ format: function(value,index,row,datas) {
 5. 修改页码宽度 width 改为 min 并且添加了 padding 0 5px
 6. 固定分页的 input 的宽度(后面还需要改)
 7. 添加可以自定义返回分页数据 p.pageData({index: 1,count: 2}) 实际上并没有修改 p.index,只是自定义返回分页罢了
+
+## v1.8
+
+1. 如果暂无数据，那么上下页都需要禁用不能点击以及显示禁用颜色 添加page=0的情况
