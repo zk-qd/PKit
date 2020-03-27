@@ -7,11 +7,8 @@ function /* 可自行扩展 */ PKit(options) {
     // 初始化表格和分页参数
     // 扩展核心业务
     _extensionCore.call(this, options)
-    this.check();
     _extensionCorePage.call(this, options);
-    this.pCheck();
     _extensionCoreTable.call(this, options);
-    this.tCheck();
 
     // 其他扩展
     this.isUOrN = isUOrN;
@@ -31,9 +28,9 @@ function /* 可自行扩展 */ PKit(options) {
 
     // 挂载之前
     this.beforeMount();
-    
+
     // 分页
-    if (this.page) {
+    if (options.page) {
         _buildPage.call(this);
         this.openEllipsisMode();
         this.pHtml();
@@ -41,7 +38,7 @@ function /* 可自行扩展 */ PKit(options) {
         this.pScale();
     }
     // 表格
-    if (this.table) {
+    if (options.table) {
         _buildTable.call(this);
         this.tAddToDom();
         this.tHead();
@@ -101,6 +98,7 @@ function /* 表格核心扩展方法 */ _extensionCoreTable(options) {
     this.tCheck = function () {
 
     }
+    this.tCheck();
 
 
 }
@@ -251,14 +249,17 @@ function /* 分页核心扩展方法 */ _extensionCorePage(options) {
     this.pContainer = page.pContainer;
 
 
-
     // 缩放因子
     this.pZoom = page.pZoom ? page.pZoom : 1;
+
+    // 跳转页
+    this.pSkip = page.pSkip;
 
     // 校验
     this.pCheck = function () {
 
     }
+    this.pCheck();
 }
 function /* 分页结构业务 分页核心方法 */ _buildPage() {
     // 添加结构
@@ -299,10 +300,24 @@ function /* 分页结构业务 分页核心方法 */ _buildPage() {
         }
 
         html.push(
-            "<li class='page-next page-equal'>下一页</li>" +
+            "<li class='page-next page-equal'>下一页</li>"
+        );
+        var skipClass = this.pSkip ? '' : 'page-skip-hidden';
+        html.push(
+            "<li class='page-skip-equal page-skip-text " + skipClass + "'>跳转</li>"
+        );
+        html.push(
+            "<li class='page-skip-equal page-skip-input " + skipClass + "'>" +
+            "<input value='' class='page-skip page-skip-enter'>" +
+            "</li>"
+        );
+        html.push(
+            "<li class='page-skip-equal page-skip-text " + skipClass + "'>页</li>"
+        );
+        html.push(
             "</ul>" +
             "</div>"
-        );
+        )
         document.querySelector(this.pContainer).innerHTML = html.join('').trim();
     }
 
@@ -321,6 +336,8 @@ function /* 分页结构业务 分页核心方法 */ _buildPage() {
         this.numLabel = this.pageDom.querySelectorAll('.page-num');
         // 包裹
         this.wrapperDom = this.pageDom.querySelector('.page-wrapper');
+        // 跳转
+        this.skipDom = this.pageDom.querySelector('.page-skip');
 
         var that = this;
         // 内聚
@@ -331,31 +348,62 @@ function /* 分页结构业务 分页核心方法 */ _buildPage() {
                 var cindex = Number(that.wrapperDom.dataset.index);
                 // 总页数
                 var pages = that.wrapperDom.dataset.pages;
-                if (current.classList.contains('page-prev')) {
-                    if (cindex == 1) return;
-                    that.index = cindex - 1;
-                    that.load();
-                } else if (current.classList.contains('page-next')) {
-                    if (cindex == pages) return;
-                    that.index = cindex + 1;
-                    that.load();
-                } else if (current.classList.contains('page-num')) {
-                    // 获取页标数字
-                    var label = Number(current.dataset.index);
-                    if (label == cindex) return;
-                    that.index = label;
-                    that.load();
-                } else if (current.classList.contains('page-first')) {
-                    var label = Number(current.dataset.index);
-                    if (label == cindex) return;
-                    that.index = label;
-                    that.load();
-                } else if (current.classList.contains('page-last')) {
-                    var label = Number(current.dataset.index);
-                    if (label == cindex) return;
-                    that.index = label;
-                    that.load();
-                };
+                switch (e.type) {
+                    case 'click':
+                        if (current.classList.contains('page-prev')) {
+                            if (cindex == 1) return;
+                            that.index = cindex - 1;
+                            that.load();
+                        } else if (current.classList.contains('page-next')) {
+                            if (cindex == pages) return;
+                            that.index = cindex + 1;
+                            that.load();
+                        } else if (current.classList.contains('page-num')) {
+                            // 获取页标数字
+                            var label = Number(current.dataset.index);
+                            if (label == cindex) return;
+                            that.index = label;
+                            that.load();
+                        } else if (current.classList.contains('page-first')) {
+                            var label = Number(current.dataset.index);
+                            if (label == cindex) return;
+                            that.index = label;
+                            that.load();
+                        } else if (current.classList.contains('page-last')) {
+                            var label = Number(current.dataset.index);
+                            if (label == cindex) return;
+                            that.index = label;
+                            that.load();
+                        }
+                        break;
+                    case 'keyup':
+                        if (current.classList.contains('page-skip')) {
+                            if (e.keyCode != 13) return;
+                            var label = Number(current.value);
+                            // 排除 字符串的情况
+                            if (!label) return;
+                            if (label == cindex) return;
+                            that.index = label;
+                            that.load();
+                        };
+                        break;
+                    case 'input':
+                        if (current.classList.contains('page-skip')) {
+                            // 不能输入数字和空字符串以外的
+                            var label = current.value;
+                            if (label === '') return;
+                            if (!/^\d+$/.test(label)) {
+                                current.value = 1;
+                                return;
+                            }
+                            // 为什么Number不放到上面  因为会将空字符串转成数字0
+                            label = Number(label);
+                            // 修正数字
+                            if (label < 1) current.value = 1;
+                            else if (label > pages) current.value = pages;
+                        };
+                        break;
+                }
             },
             configurate: {
                 once: false,
@@ -370,6 +418,8 @@ function /* 分页结构业务 分页核心方法 */ _buildPage() {
         Array.prototype.forEach.call(this.numLabel, function (item) {
             item.addEventListener('click', handle, handle.configurate);
         }, this);
+        this.skipDom.addEventListener('keyup', handle, handle.configurate);
+        this.skipDom.addEventListener('input', handle, handle.configurate);
     }
 
     // 缩放
@@ -443,7 +493,10 @@ function /* 分页渲染业务 分页核心方法 */ _renderPage(data) {
             showLeft.call(this);
             // 如果最大值为this.pages 以最大值为准
             Array.prototype.forEach.call(sliceNumLabel.call(this, 'max'), function (item, i) {
-                i = max - this.nums + i + 1;
+                // 解决ellipsis 页码不对的问题
+                var increment = 0;
+                if (this.ellipsisMode) increment = 2;
+                i = max - this.nums + i + 1 + increment;
                 item.dataset.index = i;
                 item.textContent = i;
                 shwoNum(item);
@@ -453,7 +506,10 @@ function /* 分页渲染业务 分页核心方法 */ _renderPage(data) {
             showLeft.call(this);
             showRight.call(this);
             Array.prototype.forEach.call(sliceNumLabel.call(this, 'mid'), function (item, i) {
-                i = min + i;
+                // 解决ellipsis 页码不对的问题
+                var increment = 0;
+                if (this.ellipsisMode) increment = 2;
+                i = min + i + increment;
                 item.dataset.index = i;
                 item.textContent = i;
                 shwoNum(item);
@@ -545,10 +601,11 @@ function /* 核心扩展 */ _extensionCore(options) {
         }
 
     };
-    this.pageData = function () {
+    this.pageData = function (custom = {}) {
         return {
             index: this.index,
             count: this.count,
+            ...custom,
         }
     };
 
@@ -585,7 +642,7 @@ function /* 核心扩展 */ _extensionCore(options) {
         var fontSize = window.getComputedStyle(this.tableDom, null).getPropertyValue('font-size');
         // 固定tbody的高度
         // this.tableDom.style.height = (parseFloat(hh) + parseFloat(htr)  * this.count )/parseFloat(fontSize) + 'em';
-        this.tableDom.querySelector('.table-wrapper').style.height = Math.ceil((parseFloat(hh) + parseFloat(htr) * this.count) / parseFloat(fontSize)) + 'em';
+        this.tableDom.querySelector('.table-wrapper').style.height = Math.round((parseFloat(hh) + parseFloat(htr) * this.count) / parseFloat(fontSize)) + 'em';
     }
     // 如果开启ellipsis模式
     this.ellipsisMode = false;
@@ -606,6 +663,7 @@ function /* 核心扩展 */ _extensionCore(options) {
     this.check = function () {
 
     }
+    this.check();
 }
 function /* 生命周期 */ _lifecycle(options) {
     // 重写方法

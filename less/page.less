@@ -9,9 +9,11 @@
 @pMargin: 0 0.3em;
 @pFontSize: 10px;
 
+// 分页总宽度
+@pageWidth: 100%;
 /* 分页 */
 .page-serial-css {
-width: 100%;
+width: @pageWidth;
 overflow: hidden;
 text-align: center;
 font-size: @pFontSize;
@@ -29,19 +31,23 @@ flex-wrap: nowrap;
 align-content: stretch;
 }
 /*需求改变 可以修改公共样式 */
-.page-serial-css .page-equal {
+.page-equal-common {
 flex: none;
-border: #efefef solid 1px;
-border-radius: 2px;
-box-shadow: 0px 0px 3px #efefef;
 text-align: center;
 color: #535353;
 height: @pHeight;
 line-height: @pHeight;
-width: @pWidth;
+min-width: @pWidth;
+padding: 0 5px;
 margin: @pMargin;
 font-weight: 500;
 cursor: pointer;
+}
+.page-serial-css .page-equal {
+    .page-equal-common;
+    border: #efefef solid 1px;
+    border-radius: 2px;
+    box-shadow: 0px 0px 3px #efefef;
 }
 .page-serial-css .page-equal:hover {
 /* background-color: #FF8200; */
@@ -68,8 +74,58 @@ color: white;
 .page-serial-css .page-active:hover {
     color: white;
 }
+
+// 跳转至
+.page-serial-css .page-skip-equal {
+    .page-equal-common;
+}
+// 字体
+.page-serial-css .page-skip-text {
+
+}
+// input父元素
+.page-serial-css .page-skip-input {
+    
+}
+// input
+.page-serial-css .page-skip-input .page-skip-enter {
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    vertical-align: top;
+    border: #efefef solid 1px;
+    border-radius: 2px;
+    box-shadow: 0px 0px 3px #efefef;
+
+    // 20200326 修改跳转input的宽度 后面还需要改
+    min-width: @pWidth;
+    padding: 0 5px;
+    width: 0;
+}
+.page-serial-css .page-skip-text:hover {
+    color: #409eff;
+}
+.page-serial-css .page-skip-input .page-skip-enter:hover {
+    border-color: #409eff;
+}
+.page-serial-css .page-skip-input .page-skip-enter:focus {
+    border-color: #409eff;
+}
+// 隐藏跳转
+.page-serial-css .page-skip-hidden {
+    display: none;
+}
+
 /* 清除默认样式 */
 ul {
 list-style: none;
 padding-inline-start: 0;
+margin-block-end: 0;
+margin-block-start: 0;
+}
+input {
+    outline: none;
+    font-size: inherit;
+    box-sizing: border-box;
+    border: none;
 }

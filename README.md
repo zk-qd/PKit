@@ -26,15 +26,16 @@
 
 ### page 属性
 
-| Name       |  type   |             descriptor              |   default | required |
-| ---------- | :-----: | :---------------------------------: | --------: | :------: |
-| index      | integer |               当前页                |         1 |    no    |
-| count      | integer |             一页多少行              |         5 |    no    |
-| nums       | integer |               页码数                |         5 |    no    |
-| pContainer | string  |             容器选择器              | undefined |   yes    |
-| pId        | stirng  | 分页 id 名称（非选择器） 多分页必填 | undefined |    no    |
-| ellipsis   | string  |             分页省略号              | undefined |    no    |
-| pZoom      |  float  |              缩放系数               |         1 |    no    |
+| Name       |   type   |             descriptor              |   default | required |
+| ---------- | :------: | :---------------------------------: | --------: | :------: |
+| index      | integer  |               当前页                |         1 |    no    |
+| count      | integer  |             一页多少行              |         5 |    no    |
+| nums       | integer  |               页码数                |         5 |    no    |
+| pContainer |  string  |             容器选择器              | undefined |   yes    |
+| pId        |  stirng  | 分页 id 名称（非选择器） 多分页必填 | undefined |    no    |
+| ellipsis   |  string  |             分页省略号              | undefined |    no    |
+| pZoom      |  float   |              缩放系数               |         1 |    no    |
+| pSkip      | interger |               跳转页                |     false |    no    |
 
 ### table 属性
 
@@ -59,15 +60,15 @@
 
 ### 核心方法
 
-| Name              |        Parameter         |    Return     |      Description |
-| ----------------- | :----------------------: | :-----------: | ---------------: |
-| load([,pageData]) |      {index,count}       |               | 加载数据渲染数据 |
-| pageData()        |                          | {index,count} |         获取分页 |
-| renderPage(data)  | {datas,index,rows,pages} |               |         渲染分页 |
-| pageData(data)    |         {datas}          |               |         渲染表格 |
-| pHide()           |                          |               |         隐藏分页 |
-| tHide()           |                          |               |         隐藏表格 |
-| dead()            |                          |               |         销毁表格 |
+| Name              |     Parameter      |    Return     |                        Description |
+| ----------------- | :----------------: | :-----------: | ---------------------------------: |
+| load([,pageData]) |   {index,count}    |               |                   加载数据渲染数据 |
+| pageData([,page]) |   {index,count}    | {index,count} | 获取分页以及传入参数自定义获取分页 |
+| renderPage(data)  | {index,rows,pages} |               |                           渲染分页 |
+| renderData(data)  |      {datas}       |               |                           渲染表格 |
+| pHide()           |                    |               |                           隐藏分页 |
+| tHide()           |                    |               |                           隐藏表格 |
+| dead()            |                    |               |                           销毁表格 |
 
 ### 扩展方法(外部使用)
 
@@ -81,6 +82,10 @@
 ---
 
 # 其他配置以及用法
+
+### 如何设置表格和分页的宽度以及间距
+
+直接设置外部 container 容器的高度和宽度以及间距即可
 
 ### 页面多分页表格
 
@@ -209,6 +214,20 @@ function down(datas, item) {
 // 不需要返回值 因为sort会改变原数组
 ```
 
+### 如何设置表格字体颜色
+
+```js
+format: function(value,index,row,datas) {
+        return "<span style='color: red;'>"+value+"</span>'
+    }
+```
+
+### 初始化，搜索，以及点击下一页，
+
+- 都是调用 load 方法，只需要传入分页数据即可，
+- 而获取参数请求接口返回数据以及渲染逻辑 都只需要放在 load 中就可以了
+- 当然需要注意搜索应该把 pageData 的 index 设置为 1 var page = p.pageData({index: 1}); 即可
+
 # 内部配置
 
 ### ellipsis 模式
@@ -218,13 +237,24 @@ function down(datas, item) {
 - 这样能够切换页码的时候不会出现分页结构长度变化
 - 关闭 ellipsis 模式，注释 this.openEllipsisMode()方法调用;
 
-# 待解决问题
+# 注意事项
+
+1. 关于搜索
+
+- 每次搜索都需要把分页的 pageData 的 index 清空，因为可能翻页了，第二次查询的使用用 index=2 去查，这是错误的
+
+# 已解决问题
 
 1. 将样式文件改成 less 这样就不用维护两个文件了，到时候还可以弄一个 px 的
 
 2. ellipsis 也是需要占据一个页码的 这个比较难改
    修改实时改变 那么就需要用 nums - ellipsis 已改
-   还有个 bug 问题
+
+3. 添加跳转至
+
+# 待解决问题
+
+1. 跳转 input 有样式问题 高度不一致
 
 # Version Iterator
 
@@ -264,3 +294,13 @@ function down(datas, item) {
 5. 新增排序功能 并引入字体图标
 6. 样式修改为 less 引入的仍然是 css
 7. 修改 README.md
+
+### v1.7
+
+1. 修改开启 ellipsis 页码不对的问题
+2. 添加跳转页数功能
+3. 修改分页和表格内部容器的宽度为 100%
+4. 取消 ul 的默认上下间距
+5. 修改页码宽度 width 改为 min 并且添加了 padding 0 5px
+6. 固定分页的 input 的宽度(后面还需要改)
+7. 添加可以自定义返回分页数据 p.pageData({index: 1,count: 2}) 实际上并没有修改 p.index,只是自定义返回分页罢了
