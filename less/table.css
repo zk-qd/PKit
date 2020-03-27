@@ -94,7 +94,6 @@ td {
 }
 .table-serial-css .sort-equal > i {
   position: absolute;
-  transform: scale(0.9);
   line-height: initial;
   cursor: pointer;
 }
@@ -102,8 +101,10 @@ td {
   color: #409EFF;
 }
 .table-serial-css .sort-up {
-  top: 0.35em;
+  top: 0.8em;
+  transform: scale(0.9) translateY(-50%);
 }
 .table-serial-css .sort-down {
-  bottom: 0.35em;
+  bottom: 0.8em;
+  transform: scale(0.9) translateY(50%);
 }

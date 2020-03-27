@@ -4,13 +4,33 @@
 
 本样式不允许自定义以及修改任何元素 font-size
 */
-@pHeight: 2.2em;
-@pWidth: 2.2em;
-@pMargin: 0 0.3em;
 @pFontSize: 10px;
 
+@pHeight: 2.5em;
+@pWidth: 2.5em;
+@pMargin: 0 0.3em;
 // 分页总宽度
 @pageWidth: 100%;
+
+// 总页数
+@pagePagesMarginRight: 0.9em;
+
+
+
+// px 模式
+// @pHeight: 2.5 * @pFontSize;
+// @pWidth: 2.5 * @pFontSize;
+// @pMargin: 0 0.3 * @pFontSize;
+// // 分页总宽度
+// @pageWidth: 100%;
+// // 总页数
+// @pagePagesMarginRight: 0.9 * @pFontSize;
+
+
+
+
+
+
 /* 分页 */
 .page-serial-css {
 width: @pageWidth;
@@ -31,8 +51,8 @@ flex-wrap: nowrap;
 align-content: stretch;
 }
 /*需求改变 可以修改公共样式 */
-.page-equal-common {
-flex: none;
+.page-serial-css .page-equal {
+    flex: none;
 text-align: center;
 color: #535353;
 height: @pHeight;
@@ -42,9 +62,6 @@ padding: 0 5px;
 margin: @pMargin;
 font-weight: 500;
 cursor: pointer;
-}
-.page-serial-css .page-equal {
-    .page-equal-common;
     border: #efefef solid 1px;
     border-radius: 2px;
     box-shadow: 0px 0px 3px #efefef;
@@ -75,32 +92,25 @@ color: white;
     color: white;
 }
 
-// 跳转至
-.page-serial-css .page-skip-equal {
-    .page-equal-common;
-}
+
 // 字体
 .page-serial-css .page-skip-text {
-
+    border-color: transparent;
+    box-shadow: 0 0 0 0 #FFF;
 }
 // input父元素
 .page-serial-css .page-skip-input {
-    
+    width: @pWidth;
+    vertical-align: middle;
+    overflow: hidden;
+
 }
 // input
 .page-serial-css .page-skip-input .page-skip-enter {
     width: 100%;
     height: 100%;
     text-align: center;
-    vertical-align: top;
-    border: #efefef solid 1px;
-    border-radius: 2px;
-    box-shadow: 0px 0px 3px #efefef;
-
-    // 20200326 修改跳转input的宽度 后面还需要改
-    min-width: @pWidth;
-    padding: 0 5px;
-    width: 0;
+    vertical-align: middle;
 }
 .page-serial-css .page-skip-text:hover {
     color: #409eff;
@@ -116,6 +126,20 @@ color: white;
     display: none;
 }
 
+// 总页数
+.page-serial-css .page-pages-text {
+    border-color: transparent;
+    box-shadow: 0 0 0 0 #FFF;
+    min-width: auto;
+    padding: 0;
+}
+.page-serial-css .page-pages-text:nth-of-type(3) {
+    margin-right: @pagePagesMarginRight;
+}
+.page-serial-css .page-pages-text:hover {
+    color: #409eff;
+}
+
 /* 清除默认样式 */
 ul {
 list-style: none;
@@ -128,4 +152,7 @@ input {
     font-size: inherit;
     box-sizing: border-box;
     border: none;
+}
+li {
+    box-sizing: border-box;
 }

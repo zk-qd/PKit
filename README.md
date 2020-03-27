@@ -252,9 +252,13 @@ format: function(value,index,row,datas) {
 
 3. 添加跳转至
 
-# 待解决问题
+4. 跳转 input 有样式问题 高度不一致 
 
-1. 跳转 input 有样式问题 高度不一致
+# 待解决问题
+5. sort样式不可控
+
+
+
 
 # Version Iterator
 
@@ -308,3 +312,5 @@ format: function(value,index,row,datas) {
 ## v1.8
 
 1. 如果暂无数据，那么上下页都需要禁用不能点击以及显示禁用颜色 添加page=0的情况
+2. 添加总页数 显示
+3. 新增pages等于0 判断 下一页不能点击

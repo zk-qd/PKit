@@ -6,13 +6,30 @@
 */
 // root字体大小
 @tFontSize: 10px;
-@trHeight: 2.5em;
-@margin: 0 7px;
-@tdPadding: 0 1em;
 
+
+@trHeight: 2.5em;
+@margin: 0 0.7em;
+@tdPadding: 0 1em;
 
 // 根据业务修改
 @tWidth: 100%;
+
+// 排列
+@tSortMarginL: 0.2em;
+@tSortTB: 0.8em;
+
+// px模式
+// @trHeight: 2.5 * @tFontSize;
+// @margin: 0 7 * @tFontSize;;
+// @tdPadding: 0 1  * @tFontSize;;
+
+// // 根据业务修改
+// @tWidth: 100%;
+
+// // 排列
+// @tSortMarginL: 0.2 * @tFontSize;
+// @tSortTB: 0.8 * @tFontSize;
 
 
 
@@ -108,12 +125,12 @@ table,caption,thead,tbody,tfoot,tr,th,td {
 position: absolute;
 top: 0;
 bottom: 0;
-margin-left: 0.2em;
+margin-left: @tSortMarginL;
 color: #C0C4CC;
 }
 .table-serial-css .sort-equal>i {
 position: absolute;
-transform: scale(0.9);
+
 line-height: initial;
 cursor: pointer;
 }
@@ -121,8 +138,12 @@ cursor: pointer;
 color: #409EFF;
 }
 .table-serial-css .sort-up {
-top: 0.35em;
+// top: @tSortTB;
+top: @tSortTB;
+transform: scale(0.9) translateY(-50%);
 }
 .table-serial-css .sort-down {
-bottom: 0.35em;
+// bottom: @tSortTB;
+bottom: @tSortTB;
+transform: scale(0.9) translateY(50%);
 }

@@ -268,10 +268,20 @@ function /* 分页结构业务 分页核心方法 */ _buildPage() {
         var show = 'none';
         html.push(
             "<div class='page-serial-css' id='" + this.pId + "'>" +
-            "<ul class='page-wrapper' data-index='1' data-rows='35' data-pages='7'>" +
-            "<li class='page-prev page-equal page-disabled'>上一页</li>"
+            "<ul class='page-wrapper' data-index='1' data-rows='35' data-pages='7'>"
         );
-
+        html.push(
+            "<li class='page-equal page-pages-text'>共</li>"
+        );
+        html.push(
+            "<li class='page-equal page-pages-text page-pages'>0</li>"
+        );
+        html.push(
+            "<li class='page-equal page-pages-text'>页</li>"
+        );
+        html.push(
+            "<li class='page-prev page-equal page-disabled'>上一页</li>"
+        )
         if (this.ellipsis) {
             // 首页
             html.push(
@@ -304,15 +314,15 @@ function /* 分页结构业务 分页核心方法 */ _buildPage() {
         );
         var skipClass = this.pSkip ? '' : 'page-skip-hidden';
         html.push(
-            "<li class='page-skip-equal page-skip-text " + skipClass + "'>跳转</li>"
+            "<li class='page-equal page-skip-text " + skipClass + "'>前往</li>"
         );
         html.push(
-            "<li class='page-skip-equal page-skip-input " + skipClass + "'>" +
+            "<li class='page-equal page-skip-input " + skipClass + "'>" +
             "<input value='' class='page-skip page-skip-enter'>" +
             "</li>"
         );
         html.push(
-            "<li class='page-skip-equal page-skip-text " + skipClass + "'>页</li>"
+            "<li class='page-equal page-skip-text " + skipClass + "'>页</li>"
         );
         html.push(
             "</ul>" +
@@ -356,6 +366,7 @@ function /* 分页结构业务 分页核心方法 */ _buildPage() {
                             that.load();
                         } else if (current.classList.contains('page-next')) {
                             if (cindex == pages) return;
+                            if(pages == 0) return;
                             that.index = cindex + 1;
                             that.load();
                         } else if (current.classList.contains('page-num')) {
@@ -380,7 +391,7 @@ function /* 分页结构业务 分页核心方法 */ _buildPage() {
                         if (current.classList.contains('page-skip')) {
                             if (e.keyCode != 13) return;
                             var label = Number(current.value);
-                            // 排除 字符串的情况
+                            // 排除 空字符串和0的情况
                             if (!label) return;
                             if (label == cindex) return;
                             that.index = label;
@@ -441,6 +452,8 @@ function /* 分页渲染业务 分页核心方法 */ _renderPage(data) {
     // ellipsis 省略号
     this.ellipsisLeftDom = this.pageDom.querySelector('.page-ellipsis-left');
     this.ellipsisRightDom = this.pageDom.querySelector('.page-ellipsis-right');
+    // 总页数
+    this.pagesDom = this.pageDom.querySelector('.page-pages');
     // 隐藏所有页标
     hideNums.call(this);
 
@@ -521,6 +534,10 @@ function /* 分页渲染业务 分页核心方法 */ _renderPage(data) {
     this.wrapperDom.dataset.nums = this.rows;
     this.wrapperDom.dataset.count = this.count;
     this.wrapperDom.dataset.pages = this.pages;
+
+    // 总页数赋值
+    this.pagesDom.dataset.pages = this.pages;
+    this.pagesDom.textContent = this.pages;
 
     // disabled
     this.prevDom.classList.remove('page-disabled');

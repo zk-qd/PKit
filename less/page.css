@@ -27,25 +27,13 @@
   align-content: stretch;
 }
 /*需求改变 可以修改公共样式 */
-.page-equal-common {
-  flex: none;
-  text-align: center;
-  color: #535353;
-  height: 2.2em;
-  line-height: 2.2em;
-  min-width: 2.2em;
-  padding: 0 5px;
-  margin: 0 0.3em;
-  font-weight: 500;
-  cursor: pointer;
-}
 .page-serial-css .page-equal {
   flex: none;
   text-align: center;
   color: #535353;
-  height: 2.2em;
-  line-height: 2.2em;
-  min-width: 2.2em;
+  height: 2.5em;
+  line-height: 2.5em;
+  min-width: 2.5em;
   padding: 0 5px;
   margin: 0 0.3em;
   font-weight: 500;
@@ -61,7 +49,7 @@
 }
 .page-serial-css .page-prev,
 .page-serial-css .page-next {
-  width: 5.5em;
+  width: 6.25em;
 }
 .page-serial-css .page-num {
   /* 默认隐藏所有页标 */
@@ -79,29 +67,20 @@
 .page-serial-css .page-active:hover {
   color: white;
 }
-.page-serial-css .page-skip-equal {
-  flex: none;
-  text-align: center;
-  color: #535353;
-  height: 2.2em;
-  line-height: 2.2em;
-  min-width: 2.2em;
-  padding: 0 5px;
-  margin: 0 0.3em;
-  font-weight: 500;
-  cursor: pointer;
+.page-serial-css .page-skip-text {
+  border-color: transparent;
+  box-shadow: 0 0 0 0 #FFF;
+}
+.page-serial-css .page-skip-input {
+  width: 2.5em;
+  vertical-align: middle;
+  overflow: hidden;
 }
 .page-serial-css .page-skip-input .page-skip-enter {
   width: 100%;
   height: 100%;
   text-align: center;
-  vertical-align: top;
-  border: #efefef solid 1px;
-  border-radius: 2px;
-  box-shadow: 0px 0px 3px #efefef;
-  min-width: 2.2em;
-  padding: 0 5px;
-  width: 0;
+  vertical-align: middle;
 }
 .page-serial-css .page-skip-text:hover {
   color: #409eff;
@@ -115,6 +94,18 @@
 .page-serial-css .page-skip-hidden {
   display: none;
 }
+.page-serial-css .page-pages-text {
+  border-color: transparent;
+  box-shadow: 0 0 0 0 #FFF;
+  min-width: auto;
+  padding: 0;
+}
+.page-serial-css .page-pages-text:nth-of-type(3) {
+  margin-right: 0.9em;
+}
+.page-serial-css .page-pages-text:hover {
+  color: #409eff;
+}
 /* 清除默认样式 */
 ul {
   list-style: none;
@@ -127,4 +118,7 @@ input {
   font-size: inherit;
   box-sizing: border-box;
   border: none;
+}
+li {
+  box-sizing: border-box;
 }
