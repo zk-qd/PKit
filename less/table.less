@@ -19,6 +19,9 @@
 @tSortMarginL: 0.2em;
 @tSortTB: 0.85em;
 
+// 1px
+@1px: 1em / @tFontSize;
+
 /* 表格 */
 .table-serial-css {
 overflow: hidden;
@@ -71,7 +74,7 @@ background-color: #f2f8fe;
 }
 /* 所有td */
 .table-serial-css .table-td-equal {
-border: 1px solid #e6e7e9;
+border: @1px solid #e6e7e9;
 padding: @tdPadding;
 }
 /* 头部td */

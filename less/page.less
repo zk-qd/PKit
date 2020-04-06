@@ -9,11 +9,15 @@
 @pHeight: 2.2em;
 @pWidth: 2.2em;
 @pMargin: 0 0.3em;
+@pPadding: 0 0.3em;
 // 分页总宽度
 @pageWidth: 100%;
 
 // 总页数
 @pagePagesMarginRight: 0.9em;
+
+// 1px
+@1px: 1em / @pFontSize;
 
 /* 分页 */
 .page-serial-css {
@@ -42,13 +46,13 @@ color: #535353;
 height: @pHeight;
 line-height: @pHeight;
 min-width: @pWidth;
-padding: 0 5px;
+padding: @pPadding;
 margin: @pMargin;
 font-weight: 500;
 cursor: pointer;
-    border: #efefef solid 1px;
-    border-radius: 2px;
-    box-shadow: 0px 0px 3px #efefef;
+    border: #efefef solid @1px;
+    border-radius: 2 * @1px;
+    box-shadow: 0px 0px 3 * @1px #efefef;
 }
 .page-serial-css .page-equal:hover {
 /* background-color: #FF8200; */

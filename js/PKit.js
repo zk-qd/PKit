@@ -97,6 +97,9 @@ function /* 表格核心扩展方法 */ _extensionCoreTable(options) {
     // 缩放因子
     this.tZoom = table.tZoom ? table.tZoom : 1;
 
+     // 保存最初的计算字体大小
+     this.computeTFontSize = null;
+
     this.tCheck = function () {
 
     }
@@ -160,9 +163,8 @@ function /* 表格结构核心业务 */ _buildTable() {
     // 缩放
     this.tScale = function (zoom) {
         this.tZoom = zoom ? zoom : this.tZoom;
-        var fontSize = window.getComputedStyle(this.tableDom, null).getPropertyValue('font-size');
-        var realFontSize = parseInt(fontSize) * this.tZoom * this.adapterRatio;
-        // 普通模式
+        if (!this.computeTFontSize) this.computeTFontSize = window.getComputedStyle(this.tableDom, null).getPropertyValue('font-size');
+        var realFontSize = parseInt(this.computeTFontSize) * this.tZoom * this.adapterRatio;
         this.tableDom.style.fontSize = realFontSize + 'px';
     }
 }
@@ -258,6 +260,9 @@ function /* 分页核心扩展方法 */ _extensionCorePage(options) {
 
     // 跳转页
     this.pSkip = page.pSkip;
+
+    // 保存最初的计算字体大小
+    this.computePFontSize = null;
 
     // 校验
     this.pCheck = function () {
@@ -440,8 +445,9 @@ function /* 分页结构业务 分页核心方法 */ _buildPage() {
     // 缩放
     this.pScale = function (zoom) {
         this.pZoom = zoom ? zoom : this.pZoom;
-        var fontSize = window.getComputedStyle(this.pageDom, null).getPropertyValue('font-size');
-        var realFontSize = parseInt(fontSize) * this.pZoom * this.adapterRatio;
+        // 适配不能用计算属性，应该保存最初属性
+        if (!this.computePFontSize) this.computePFontSize = window.getComputedStyle(this.pageDom, null).getPropertyValue('font-size');
+        var realFontSize = parseInt(this.computePFontSize) * this.pZoom * this.adapterRatio;
         this.pageDom.style.fontSize = realFontSize + 'px';
     }
 }
@@ -686,7 +692,7 @@ function /* 核心扩展 */ _extensionCore(options) {
     this.adapterRatio = 1;
     // 是否开启适配
     this.adapterCss = options.adapterCss;
- 
+
     this.check = function () {
 
     }
@@ -915,11 +921,13 @@ function /* 转换undefined以及null */ isUOrN(val) {
 function/* 布局适配 */  PKit_inset_adapterCss() {
     if (this.adapterCss) {
         // 根据1920
-        this.adapterRatio = window.innerWidth / 1920
+        this.adapterRatio = window.innerWidth / 1920;
         window.addEventListener('resize', () => {
             this.adapterRatio = window.innerWidth / 1920
             this.tScale();
             this.pScale();
+            console.log(this.computePFontSize)
+            console.log(this.computeTFontSize)
             console.log(this.adapterRatio)
         });
     } else this.adapterRatio = 1;

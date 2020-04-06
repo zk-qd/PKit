@@ -34,13 +34,13 @@
   height: 2.2em;
   line-height: 2.2em;
   min-width: 2.2em;
-  padding: 0 5px;
+  padding: 0 0.3em;
   margin: 0 0.3em;
   font-weight: 500;
   cursor: pointer;
-  border: #efefef solid 1px;
-  border-radius: 2px;
-  box-shadow: 0px 0px 3px #efefef;
+  border: #efefef solid 0.06666667em;
+  border-radius: 0.13333333em;
+  box-shadow: 0px 0px 0.2em #efefef;
 }
 .page-serial-css .page-equal:hover {
   /* background-color: #FF8200; */

@@ -48,7 +48,7 @@
 }
 /* 所有td */
 .table-serial-css .table-td-equal {
-  border: 1px solid #e6e7e9;
+  border: 0.06666667em solid #e6e7e9;
   padding: 0 1em;
 }
 /* 头部td */
