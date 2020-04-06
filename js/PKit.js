@@ -22,6 +22,8 @@ function /* 可自行扩展 */ PKit(options) {
     this.PKit_inset_sortData = PKit_inset_sortData;
     this.PKit_inset_sort = PKit_inset_sort;
     this.PKit_inset_sortPriority = PKit_inset_sortPriority;
+    // 适配
+    PKit_inset_adapterCss.call(this);
 
     // 初始化完成 构建之前
     this.created();
@@ -157,9 +159,11 @@ function /* 表格结构核心业务 */ _buildTable() {
 
     // 缩放
     this.tScale = function (zoom) {
-        var tZoom = zoom ? zoom : this.tZoom;
+        this.tZoom = zoom ? zoom : this.tZoom;
         var fontSize = window.getComputedStyle(this.tableDom, null).getPropertyValue('font-size');
-        this.tableDom.style.fontSize = parseInt(fontSize) * tZoom + 'px';
+        var realFontSize = parseInt(fontSize) * this.tZoom * this.adapterRatio;
+        // 普通模式
+        this.tableDom.style.fontSize = realFontSize + 'px';
     }
 }
 function /* 表格渲染业务 核心方法 */ _renderTable(data) {
@@ -366,7 +370,7 @@ function /* 分页结构业务 分页核心方法 */ _buildPage() {
                             that.load();
                         } else if (current.classList.contains('page-next')) {
                             if (cindex == pages) return;
-                            if(pages == 0) return;
+                            if (pages == 0) return;
                             that.index = cindex + 1;
                             that.load();
                         } else if (current.classList.contains('page-num')) {
@@ -435,9 +439,10 @@ function /* 分页结构业务 分页核心方法 */ _buildPage() {
 
     // 缩放
     this.pScale = function (zoom) {
-        var pZoom = zoom ? zoom : this.pZoom;
+        this.pZoom = zoom ? zoom : this.pZoom;
         var fontSize = window.getComputedStyle(this.pageDom, null).getPropertyValue('font-size');
-        this.pageDom.style.fontSize = parseInt(fontSize) * pZoom + 'px';
+        var realFontSize = parseInt(fontSize) * this.pZoom * this.adapterRatio;
+        this.pageDom.style.fontSize = realFontSize + 'px';
     }
 }
 function /* 分页渲染业务 分页核心方法 */ _renderPage(data) {
@@ -677,6 +682,11 @@ function /* 核心扩展 */ _extensionCore(options) {
     // 记录排序状态的高亮的元素
     this.sortDom = null;
 
+    // 容器适配 比例
+    this.adapterRatio = 1;
+    // 是否开启适配
+    this.adapterCss = options.adapterCss;
+ 
     this.check = function () {
 
     }
@@ -901,6 +911,18 @@ function /* 排序数据优先原则 */ PKit_inset_sortPriority() {
 function /* 转换undefined以及null */ isUOrN(val) {
     if (val == undefined) return '';
     else return val;
+}
+function/* 布局适配 */  PKit_inset_adapterCss() {
+    if (this.adapterCss) {
+        // 根据1920
+        this.adapterRatio = window.innerWidth / 1920
+        window.addEventListener('resize', () => {
+            this.adapterRatio = window.innerWidth / 1920
+            this.tScale();
+            this.pScale();
+            console.log(this.adapterRatio)
+        });
+    } else this.adapterRatio = 1;
 }
 
 

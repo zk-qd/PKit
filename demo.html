@@ -11,23 +11,24 @@
     body {
         margin: 0;
         padding-top: 100px;
+        overflow: hidden;
     }
-
     html,
     body {
         height: 100%;
         width: 100%;
     }
+
     .table2 {
         width: 50%;
         margin: 0 auto;
     }
+
     .page2 {
         width: 50%;
         margin: 0 auto;
         margin-top: 20px;
     }
-
 </style>
 
 <body>
@@ -45,6 +46,7 @@
 
         }
         var p1 = new PKit({
+            adapterCss: true,
             // 分页配置
             page: {
                 // 容器选择器
@@ -56,7 +58,7 @@
                 // 页码
                 nums: 5,
                 // 缩放系数
-                pZoom: 1.5,
+                pZoom: 1,
                 // 是否开启跳转页
                 pSkip: true,
             },
@@ -76,7 +78,7 @@
                     {
                         field: 'name',
                         sort: 'chinese',
-                       
+
                         name: '姓名',
                     },
                     {
@@ -94,13 +96,13 @@
                         field: 'operation',
                         name: '操作',
                         format: function (value, index, row, data) {
-                            return "<a style='color: blue;' data-id='"+row.id+"'>查看</a>" +
-                            "&nbsp;&nbsp;<a style='color: red;' data-id='"+row.id+"'>删除</a>";
+                            return "<a style='color: blue;' data-id='" + row.id + "'>查看</a>" +
+                                "&nbsp;&nbsp;<a style='color: red;' data-id='" + row.id + "'>删除</a>";
                         }
                     }
                 ],
                 // 缩放系数
-                tZoom: 1.5,
+                tZoom: 1,
 
             },
             load: function (pageData) {
@@ -125,17 +127,19 @@
                 // 容器选择器
                 pContainer: '.page2',
                 ellipsis: '...',
+                pZoom: 0.8,
             },
             // 单独数据
             table: {
                 tContainer: '.table2',
                 tId: 'table-serial-js2',
+                tZoom: 0.8,
                 names: [
                     {
                         field: 'serialNumber',
                         name: '序号',
                         format: function (value, index, row, data) {
-                            return this.count * (this.index -1) + 1 + index;
+                            return this.count * (this.index - 1) + 1 + index;
                         }
                     },
                     {

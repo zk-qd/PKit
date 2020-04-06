@@ -9,7 +9,7 @@
   overflow: hidden;
   text-align: left;
   margin: 0 auto;
-  font-size: 10px;
+  font-size: 15px;
   width: 100%;
   -moz-user-select: none;
   /*火狐*/
@@ -101,10 +101,10 @@ td {
   color: #409EFF;
 }
 .table-serial-css .sort-up {
-  top: 0.8em;
+  top: 0.85em;
   transform: scale(0.9) translateY(-50%);
 }
 .table-serial-css .sort-down {
-  bottom: 0.8em;
+  bottom: 0.85em;
   transform: scale(0.9) translateY(50%);
 }

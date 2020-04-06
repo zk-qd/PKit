@@ -22,7 +22,7 @@
 
 > 此插件使用原生 js 不依赖任何插件
 
-# API
+# 配置属性
 
 ### page 属性
 
@@ -58,6 +58,14 @@
 | down   | function |    降序    | undefined |    no    |
 | format | function |   格式化   | undefined |    no    |
 
+### common 公共属性
+
+| Name       |  type   | descriptor | default | required |
+| ---------- | :-----: | :--------: | ------: | :------: |
+| adapterCss | boolean |  适配模式  |      no |    no    |
+
+# API
+
 ### 核心方法
 
 | Name              |     Parameter      |    Return     |                        Description |
@@ -70,12 +78,18 @@
 | tHide()           |                    |               |                           隐藏表格 |
 | dead()            |                    |               |                           销毁表格 |
 
-### 扩展方法(外部使用)
+### 扩展外部方法
 
 | Name                   |   Parameter   |             Return             |                                  Description |
 | ---------------------- | :-----------: | :----------------------------: | -------------------------------------------: |
 | allData(data,pageData) | Object,Object | {datas,index,count,rows,pages} | 如果后台返回的是全部数据，可以使用此方法处理 |
-| isUOrN(value)          |      any      |              any               |  如果数据是 undefined 或者 null 那么转换成'' |
+
+### 内部方法
+
+| Name                    | Parameter | Return |                                 Description |
+| ----------------------- | :-------: | :----: | ------------------------------------------: |
+| isUOrN(value)           |    any    |  any   | 如果数据是 undefined 或者 null 那么转换成'' |
+| PKit_inset_adapterCss() |    no     |   no   |                                适配模式方法 |
 
 ### 生命周期方法
 
@@ -98,8 +112,10 @@
 
 ### 缩放系数
 
-> tZoom: 1.5,
-> pZoom: 1.5,
+建议 默认大小
+
+> tZoom: 1,
+> pZoom: 1,
 
 ### 隐藏列属性 hidden
 
@@ -132,20 +148,20 @@ names: [
   {
     field: "serialNumber",
     name: "序号",
-    format: function(value, index, row, data) {
+    format: function (value, index, row, data) {
       return index + 1;
-    }
-  }
+    },
+  },
 ];
 // 第二种方式 每页累加
 names: [
   {
     field: "serialNumber",
     name: "序号",
-    format: function(value, index, row, data) {
+    format: function (value, index, row, data) {
       return this.count * (this.index - 1) + 1;
-    }
-  }
+    },
+  },
 ];
 ```
 
@@ -177,20 +193,20 @@ var names = [
   {
     field: "name",
     sort: true,
-    name: "姓名"
+    name: "姓名",
   },
   // 指定 数字排序
   {
     field: "name",
     sort: "digit",
-    name: "姓名"
+    name: "姓名",
   },
   // 指定 汉字排序
   {
     field: "name",
     sort: "chinese",
-    name: "姓名"
-  }
+    name: "姓名",
+  },
 ];
 
 // 如果需要自定义排序
@@ -201,8 +217,8 @@ var names = [
     sort: true,
     up: up,
     down: down,
-    name: "姓名"
-  }
+    name: "姓名",
+  },
 ];
 // 排序有分两种类型
 function up(datas, item) {
@@ -252,13 +268,11 @@ format: function(value,index,row,datas) {
 
 3. 添加跳转至
 
-4. 跳转 input 有样式问题 高度不一致 
+4. 跳转 input 有样式问题 高度不一致
 
 # 待解决问题
-5. sort样式不可控
 
-
-
+5. sort 样式不可控
 
 # Version Iterator
 
@@ -311,6 +325,9 @@ format: function(value,index,row,datas) {
 
 ## v1.8
 
-1. 如果暂无数据，那么上下页都需要禁用不能点击以及显示禁用颜色 添加page=0的情况
+1. 如果暂无数据，那么上下页都需要禁用不能点击以及显示禁用颜色 添加 page=0 的情况
 2. 添加总页数 显示
-3. 新增pages等于0 判断 下一页不能点击
+3. 新增 pages 等于 0 判断 下一页不能点击
+4. 字体统一初始大小为 15px
+5. 新增css布局适配模式
+
