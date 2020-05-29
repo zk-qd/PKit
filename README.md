@@ -244,9 +244,15 @@ format: function(value,index,row,datas) {
 - 而获取参数请求接口返回数据以及渲染逻辑 都只需要放在 load 中就可以了
 - 当然需要注意搜索应该把 pageData 的 index 设置为 1 var page = p.pageData({index: 1}); 即可
 
-### 如何适配现有项目rem
-- 将根元素的字体改成对应的rem
+### 如何适配现有项目 rem
+
+- 将根元素的字体改成对应的 rem
 - 并且关闭适配模式
+
+### 如何隐藏表格或者分页
+
+- p1.pHide();
+- p1.tHde();
 
 # 内部配置
 
@@ -264,9 +270,6 @@ format: function(value,index,row,datas) {
 - 每次搜索都需要把分页的 pageData 的 index 清空，因为可能翻页了，第二次查询的使用用 index=2 去查，这是错误的
 
 # 已解决问题
-
-
-
 
 1. 将样式文件改成 less 这样就不用维护两个文件了，到时候还可以弄一个 px 的
 
@@ -336,6 +339,6 @@ format: function(value,index,row,datas) {
 2. 添加总页数 显示
 3. 新增 pages 等于 0 判断 下一页不能点击
 4. 字体统一初始大小为 15px
-5. 新增css布局适配模式
-6. 修改bug 适配不应该用实时的字体计算属性，而应该保存最初的字体大小
-7. 将除了fontSize只要的所有px改成em
+5. 新增 css 布局适配模式
+6. 修改 bug 适配不应该用实时的字体计算属性，而应该保存最初的字体大小
+7. 将除了 fontSize 只要的所有 px 改成 em
