@@ -342,3 +342,6 @@ format: function(value,index,row,datas) {
 5. 新增 css 布局适配模式
 6. 修改 bug 适配不应该用实时的字体计算属性，而应该保存最初的字体大小
 7. 将除了 fontSize 只要的所有 px 改成 em
+   
+## v1.9
+1. bootstrap的input背景颜色影响了插件的input背景色，消除影响

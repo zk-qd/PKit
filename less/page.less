@@ -21,61 +21,73 @@
 
 /* 分页 */
 .page-serial-css {
-width: @pageWidth;
-overflow: hidden;
-text-align: center;
-font-size: @pFontSize;
+    width: @pageWidth;
+    overflow: hidden;
+    text-align: center;
+    font-size: @pFontSize;
 
--moz-user-select: none; /*火狐*/
--webkit-user-select: none; /*webkit浏览器*/
--ms-user-select: none; /*IE10*/
--khtml-user-select: none; /*早期浏览器*/
-user-select: none;
+    -moz-user-select: none;
+    /*火狐*/
+    -webkit-user-select: none;
+    /*webkit浏览器*/
+    -ms-user-select: none;
+    /*IE10*/
+    -khtml-user-select: none;
+    /*早期浏览器*/
+    user-select: none;
 }
+
 .page-serial-css .page-wrapper {
-display: inline-flex;
-flex-direction: row;
-flex-wrap: nowrap;
-align-content: stretch;
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-content: stretch;
 }
+
 /*需求改变 可以修改公共样式 */
 .page-serial-css .page-equal {
     flex: none;
-text-align: center;
-color: #535353;
-height: @pHeight;
-line-height: @pHeight;
-min-width: @pWidth;
-padding: @pPadding;
-margin: @pMargin;
-font-weight: 500;
-cursor: pointer;
+    text-align: center;
+    color: #535353;
+    height: @pHeight;
+    line-height: @pHeight;
+    min-width: @pWidth;
+    padding: @pPadding;
+    margin: @pMargin;
+    font-weight: 500;
+    cursor: pointer;
     border: #efefef solid @1px;
     border-radius: 2 * @1px;
     box-shadow: 0px 0px 3 * @1px #efefef;
 }
+
 .page-serial-css .page-equal:hover {
-/* background-color: #FF8200; */
-/* background-color: #409EFF; */
-color: #409eff;
+    /* background-color: #FF8200; */
+    /* background-color: #409EFF; */
+    color: #409eff;
 }
+
 .page-serial-css .page-prev,
 .page-serial-css .page-next {
-width: @pWidth / 2 * 5;
+    width: @pWidth / 2 * 5;
 }
+
 .page-serial-css .page-num {
-/* 默认隐藏所有页标 */
-display: none;
+    /* 默认隐藏所有页标 */
+    display: none;
 }
+
 .page-serial-css .page-disabled,
 .page-serial-css .page-disabled:hover {
-background-color: #efefef;
+    background-color: #efefef;
 }
+
 .page-serial-css .page-active {
-/* background-color: #FF8200; */
-background-color: #409eff;
-color: white;
+    /* background-color: #FF8200; */
+    background-color: #409eff;
+    color: white;
 }
+
 .page-serial-css .page-active:hover {
     color: white;
 }
@@ -86,6 +98,7 @@ color: white;
     border-color: transparent;
     box-shadow: 0 0 0 0 #FFF;
 }
+
 // input父元素
 .page-serial-css .page-skip-input {
     width: @pWidth;
@@ -93,6 +106,7 @@ color: white;
     overflow: hidden;
 
 }
+
 // input
 .page-serial-css .page-skip-input .page-skip-enter {
     width: 100%;
@@ -100,15 +114,19 @@ color: white;
     text-align: center;
     vertical-align: middle;
 }
+
 .page-serial-css .page-skip-text:hover {
     color: #409eff;
 }
+
 .page-serial-css .page-skip-input .page-skip-enter:hover {
     border-color: #409eff;
 }
+
 .page-serial-css .page-skip-input .page-skip-enter:focus {
     border-color: #409eff;
 }
+
 // 隐藏跳转
 .page-serial-css .page-skip-hidden {
     display: none;
@@ -121,26 +139,40 @@ color: white;
     min-width: auto;
     padding: 0;
 }
+
 .page-serial-css .page-pages-text:nth-of-type(3) {
     margin-right: @pagePagesMarginRight;
 }
+
 .page-serial-css .page-pages-text:hover {
     color: #409eff;
 }
 
-/* 清除默认样式 */
-ul {
-list-style: none;
-padding-inline-start: 0;
-margin-block-end: 0;
-margin-block-start: 0;
-}
-input {
-    outline: none;
-    font-size: inherit;
-    box-sizing: border-box;
-    border: none;
-}
-li {
-    box-sizing: border-box;
+
+.page-serial-css {
+
+    /* 清除默认样式 */
+    ul {
+        list-style: none;
+        padding-inline-start: 0;
+        margin-block-end: 0;
+        margin-block-start: 0;
+    }
+
+    input {
+        outline: none;
+        font-size: inherit;
+        box-sizing: border-box;
+        border: none;
+    }
+
+    li {
+        box-sizing: border-box;
+    }
+
+    // 防止样式和bootstrap冲突
+    input {
+        background-color: unset;
+    }
+
 }

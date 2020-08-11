@@ -106,19 +106,24 @@
 .page-serial-css .page-pages-text:hover {
   color: #409eff;
 }
-/* 清除默认样式 */
-ul {
+.page-serial-css {
+  /* 清除默认样式 */
+}
+.page-serial-css ul {
   list-style: none;
   padding-inline-start: 0;
   margin-block-end: 0;
   margin-block-start: 0;
 }
-input {
+.page-serial-css input {
   outline: none;
   font-size: inherit;
   box-sizing: border-box;
   border: none;
 }
-li {
+.page-serial-css li {
   box-sizing: border-box;
+}
+.page-serial-css input {
+  background-color: unset;
 }
